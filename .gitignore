@@ -1,0 +1,13 @@
+# Ignore Data Folders (Too big for GitHub)
+10k_filings/
+cleaned_filings/
+
+# Ignore Output Data
+*.csv
+
+# Ignore Mac System Files
+.DS_Store
+
+# Ignore Python Cache
+__pycache__/
+*.pyc
