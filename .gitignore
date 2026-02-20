@@ -11,3 +11,6 @@ cleaned_filings/
 # Ignore Python Cache
 __pycache__/
 *.pyc
+
+# Ignore environment files
+.env
