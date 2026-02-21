@@ -113,6 +113,20 @@ def main():
     
     # Create a 1-to-1 dictionary for lookup
     ticker_to_cik = dict(zip(sec_map['ticker'], sec_map['CIK_str']))
+
+    # Force-map companies that have dropped out of the SEC's active JSON
+    # due to mergers, spin-offs, or corporate restructuring.
+    overrides = {
+        'SQ': '0001512673',   # Block
+        'DFS': '0001393612',  # Discover Financial Services
+        'BERY': '0001378992', # Berry Global Group
+        'OMI': '0000075252',  # Owens & Minor
+        'AMRK': '0001591588', # A-Mark Precious Metals (GOLD.com)
+        'ATUS': '0001702780', # Altice USA
+        'EDR': '0001766363',  # Endeavor Group Holdings
+    }
+    # Inject the missing companies into the dictionary
+    ticker_to_cik.update(overrides)
     
     # Use .map() to assign CIKs directly to your original rows
     valid_companies['CIK'] = valid_companies['ticker'].map(ticker_to_cik)
