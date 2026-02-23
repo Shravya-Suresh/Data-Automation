@@ -1,0 +1,480 @@
+# ===========================================================================
+# SEC EDGAR 10-K / 10-Q Filing Keyword Taxonomy
+# ---------------------------------------------------------------------------
+# Covers AI + six strategic pillars (purpose, phygital experience, platform,
+# personalization, participation, partnerships) plus digital transformation
+# and AI-spend evidence for Lane 2 text extraction.
+#
+# Pattern notes:
+#   - All patterns are regex, designed for case-insensitive matching.
+#   - Short / ambiguous tokens (AI, ML, ESG, ...) use \b word boundaries.
+#   - Multi-word phrases use \s+ to tolerate variable whitespace.
+#
+# Keyword vs key_word (notation):
+#   - Only the PATTERN affects what is matched. Use \s+ for space in prose
+#     (e.g. "machine learning"); a literal _ in the pattern matches underscore
+#     in text (e.g. "machine_learning"), which is rare in SEC filings.
+#   - The LABEL is only for output column names (spaces/hyphens → underscore).
+#     Different labels that normalize to the same name (e.g. "key word" and
+#     "key_word") would overwrite in the CSV; use distinct labels per keyword.
+# ===========================================================================
+
+groups:
+  # -----------------------------------------------------------------------
+  # AI
+  # -----------------------------------------------------------------------
+  - name: ai
+    display_name: "AI"
+    keywords:
+      - label: "artificial intelligence"
+        pattern: "\\bartificial\\s+intelligence\\b"
+        is_phrase: true
+      - label: "AI"
+        pattern: "\\bAI\\b"
+        is_phrase: false
+      - label: "machine learning"
+        pattern: "\\bmachine\\s+learning\\b"
+        is_phrase: true
+      - label: "ML"
+        pattern: "\\bML\\b"
+        is_phrase: false
+      - label: "generative AI"
+        pattern: "\\bgenerative\\s+AI\\b"
+        is_phrase: true
+      - label: "GenAI"
+        pattern: "\\bGenAI\\b"
+        is_phrase: false
+      - label: "large language model"
+        pattern: "\\blarge\\s+language\\s+model\\b"
+        is_phrase: true
+      - label: "LLM"
+        pattern: "\\bLLM\\b"
+        is_phrase: false
+      - label: "foundation model"
+        pattern: "\\bfoundation\\s+model\\b"
+        is_phrase: true
+      - label: "model training"
+        pattern: "\\bmodel\\s+training\\b"
+        is_phrase: true
+      - label: "inference"
+        pattern: "\\binference\\b"
+        is_phrase: false
+      - label: "GPU"
+        pattern: "\\bGPU\\b"
+        is_phrase: false
+      - label: "accelerator"
+        pattern: "\\baccelerator\\b"
+        is_phrase: false
+      - label: "compute"
+        pattern: "\\bcompute\\b"
+        is_phrase: false
+      - label: "data labeling"
+        pattern: "\\bdata\\s+labeling\\b"
+        is_phrase: true
+      - label: "fine-tuning"
+        pattern: "\\bfine[\\s-]tuning\\b"
+        is_phrase: false
+      - label: "deep learning"
+        pattern: "\\bdeep\\s+learning\\b"
+        is_phrase: true
+      - label: "neural network"
+        pattern: "\\bneural\\s+network\\b"
+        is_phrase: true
+      - label: "natural language processing"
+        pattern: "\\bnatural\\s+language\\s+processing\\b"
+        is_phrase: true
+      - label: "NLP"
+        pattern: "\\bNLP\\b"
+        is_phrase: false
+      - label: "computer vision"
+        pattern: "\\bcomputer\\s+vision\\b"
+        is_phrase: true
+      - label: "chatbot"
+        pattern: "\\bchatbot\\b"
+        is_phrase: false
+      - label: "automation"
+        pattern: "\\bautomation\\b"
+        is_phrase: false
+
+  # -----------------------------------------------------------------------
+  # Purpose
+  # -----------------------------------------------------------------------
+  - name: purpose
+    display_name: "Purpose"
+    keywords:
+      - label: "corporate purpose"
+        pattern: "\\bcorporate\\s+purpose\\b"
+        is_phrase: true
+      - label: "brand purpose"
+        pattern: "\\bbrand\\s+purpose\\b"
+        is_phrase: true
+      - label: "purpose"
+        pattern: "\\bpurpose\\b"
+        is_phrase: false
+      - label: "mission"
+        pattern: "\\bmission\\b"
+        is_phrase: false
+      - label: "social impact"
+        pattern: "\\bsocial\\s+impact\\b"
+        is_phrase: true
+      - label: "shared value"
+        pattern: "\\bshared\\s+value\\b"
+        is_phrase: true
+      - label: "stakeholder capitalism"
+        pattern: "\\bstakeholder\\s+capitalism\\b"
+        is_phrase: true
+      - label: "sustainability"
+        pattern: "\\bsustainability\\b"
+        is_phrase: false
+      - label: "ESG"
+        pattern: "\\bESG\\b"
+        is_phrase: false
+      - label: "carbon footprint"
+        pattern: "\\bcarbon\\s+footprint\\b"
+        is_phrase: true
+      - label: "corporate social responsibility"
+        pattern: "\\bcorporate\\s+social\\s+responsibility\\b"
+        is_phrase: true
+      - label: "CSR"
+        pattern: "\\bCSR\\b"
+        is_phrase: false
+      - label: "activism"
+        pattern: "\\bactivism\\b"
+        is_phrase: false
+      - label: "DEI"
+        pattern: "\\bDEI\\b"
+        is_phrase: false
+      - label: "diversity equity inclusion"
+        pattern: "\\bdiversity[,\\s]+equity[,\\s]+(?:and\\s+)?inclusion\\b"
+        is_phrase: true
+      - label: "climate"
+        pattern: "\\bclimate\\b"
+        is_phrase: false
+      - label: "net zero"
+        pattern: "\\bnet[\\s-]zero\\b"
+        is_phrase: true
+
+  # -----------------------------------------------------------------------
+  # Phygital Experience
+  # -----------------------------------------------------------------------
+  - name: phygital
+    display_name: "Phygital Experience"
+    keywords:
+      - label: "phygital"
+        pattern: "\\bphygital\\b"
+        is_phrase: false
+      - label: "physical digital"
+        pattern: "\\bphysical\\s+digital\\b"
+        is_phrase: true
+      - label: "augmented reality"
+        pattern: "\\baugmented\\s+reality\\b"
+        is_phrase: true
+      - label: "AR"
+        pattern: "\\bAR\\b"
+        is_phrase: false
+      - label: "virtual reality"
+        pattern: "\\bvirtual\\s+reality\\b"
+        is_phrase: true
+      - label: "VR"
+        pattern: "\\bVR\\b"
+        is_phrase: false
+      - label: "mixed reality"
+        pattern: "\\bmixed\\s+reality\\b"
+        is_phrase: true
+      - label: "metaverse"
+        pattern: "\\bmetaverse\\b"
+        is_phrase: false
+      - label: "immersive experience"
+        pattern: "\\bimmersive\\s+experience\\b"
+        is_phrase: true
+      - label: "in-store technology"
+        pattern: "\\bin[\\s-]store\\s+technology\\b"
+        is_phrase: true
+      - label: "contactless"
+        pattern: "\\bcontactless\\b"
+        is_phrase: false
+      - label: "smart store"
+        pattern: "\\bsmart\\s+store\\b"
+        is_phrase: true
+      - label: "digital kiosk"
+        pattern: "\\bdigital\\s+kiosk\\b"
+        is_phrase: true
+      - label: "beacon technology"
+        pattern: "\\bbeacon\\s+technology\\b"
+        is_phrase: true
+
+  # -----------------------------------------------------------------------
+  # Platform
+  # -----------------------------------------------------------------------
+  - name: platform
+    display_name: "Platform"
+    keywords:
+      - label: "digital platform"
+        pattern: "\\bdigital\\s+platform\\b"
+        is_phrase: true
+      - label: "technology platform"
+        pattern: "\\btechnology\\s+platform\\b"
+        is_phrase: true
+      - label: "platform"
+        pattern: "\\bplatform\\b"
+        is_phrase: false
+      - label: "cloud computing"
+        pattern: "\\bcloud\\s+computing\\b"
+        is_phrase: true
+      - label: "cloud infrastructure"
+        pattern: "\\bcloud\\s+infrastructure\\b"
+        is_phrase: true
+      - label: "SaaS"
+        pattern: "\\bSaaS\\b"
+        is_phrase: false
+      - label: "PaaS"
+        pattern: "\\bPaaS\\b"
+        is_phrase: false
+      - label: "IaaS"
+        pattern: "\\bIaaS\\b"
+        is_phrase: false
+      - label: "API"
+        pattern: "\\bAPI\\b"
+        is_phrase: false
+      - label: "microservices"
+        pattern: "\\bmicroservices\\b"
+        is_phrase: false
+      - label: "data platform"
+        pattern: "\\bdata\\s+platform\\b"
+        is_phrase: true
+      - label: "technology infrastructure"
+        pattern: "\\btechnology\\s+infrastructure\\b"
+        is_phrase: true
+      - label: "digital infrastructure"
+        pattern: "\\bdigital\\s+infrastructure\\b"
+        is_phrase: true
+      - label: "serverless"
+        pattern: "\\bserverless\\b"
+        is_phrase: false
+
+  # -----------------------------------------------------------------------
+  # Personalization
+  # -----------------------------------------------------------------------
+  - name: personalization
+    display_name: "Personalization"
+    keywords:
+      - label: "personalization"
+        pattern: "\\bpersonalization\\b"
+        is_phrase: false
+      - label: "personalized"
+        pattern: "\\bpersonalized\\b"
+        is_phrase: false
+      - label: "recommendation engine"
+        pattern: "\\brecommendation\\s+engine\\b"
+        is_phrase: true
+      - label: "customer analytics"
+        pattern: "\\bcustomer\\s+analytics\\b"
+        is_phrase: true
+      - label: "behavioral targeting"
+        pattern: "\\bbehavioral\\s+targeting\\b"
+        is_phrase: true
+      - label: "dynamic pricing"
+        pattern: "\\bdynamic\\s+pricing\\b"
+        is_phrase: true
+      - label: "customer segmentation"
+        pattern: "\\bcustomer\\s+segmentation\\b"
+        is_phrase: true
+      - label: "predictive analytics"
+        pattern: "\\bpredictive\\s+analytics\\b"
+        is_phrase: true
+      - label: "customer experience"
+        pattern: "\\bcustomer\\s+experience\\b"
+        is_phrase: true
+      - label: "CX"
+        pattern: "\\bCX\\b"
+        is_phrase: false
+      - label: "user experience"
+        pattern: "\\buser\\s+experience\\b"
+        is_phrase: true
+      - label: "UX"
+        pattern: "\\bUX\\b"
+        is_phrase: false
+      - label: "customer journey"
+        pattern: "\\bcustomer\\s+journey\\b"
+        is_phrase: true
+      - label: "hyper-personalization"
+        pattern: "\\bhyper[\\s-]personalization\\b"
+        is_phrase: false
+
+  # -----------------------------------------------------------------------
+  # Participation
+  # -----------------------------------------------------------------------
+  - name: participation
+    display_name: "Participation"
+    keywords:
+      - label: "user-generated content"
+        pattern: "\\buser[\\s-]generated\\s+content\\b"
+        is_phrase: true
+      - label: "UGC"
+        pattern: "\\bUGC\\b"
+        is_phrase: false
+      - label: "community engagement"
+        pattern: "\\bcommunity\\s+engagement\\b"
+        is_phrase: true
+      - label: "social media"
+        pattern: "\\bsocial\\s+media\\b"
+        is_phrase: true
+      - label: "crowdsourcing"
+        pattern: "\\bcrowdsourcing\\b"
+        is_phrase: false
+      - label: "co-creation"
+        pattern: "\\bco[\\s-]creation\\b"
+        is_phrase: false
+      - label: "brand community"
+        pattern: "\\bbrand\\s+community\\b"
+        is_phrase: true
+      - label: "customer feedback"
+        pattern: "\\bcustomer\\s+feedback\\b"
+        is_phrase: true
+      - label: "loyalty program"
+        pattern: "\\bloyalty\\s+program\\b"
+        is_phrase: true
+      - label: "gamification"
+        pattern: "\\bgamification\\b"
+        is_phrase: false
+      - label: "influencer"
+        pattern: "\\binfluencer\\b"
+        is_phrase: false
+      - label: "creator economy"
+        pattern: "\\bcreator\\s+economy\\b"
+        is_phrase: true
+      - label: "customer engagement"
+        pattern: "\\bcustomer\\s+engagement\\b"
+        is_phrase: true
+
+  # -----------------------------------------------------------------------
+  # Partnerships
+  # -----------------------------------------------------------------------
+  - name: partnerships
+    display_name: "Partnerships"
+    keywords:
+      - label: "strategic partnership"
+        pattern: "\\bstrategic\\s+partnership\\b"
+        is_phrase: true
+      - label: "technology alliance"
+        pattern: "\\btechnology\\s+alliance\\b"
+        is_phrase: true
+      - label: "ecosystem partnership"
+        pattern: "\\becosystem\\s+partnership\\b"
+        is_phrase: true
+      - label: "joint venture"
+        pattern: "\\bjoint\\s+venture\\b"
+        is_phrase: true
+      - label: "digital partnership"
+        pattern: "\\bdigital\\s+partnership\\b"
+        is_phrase: true
+      - label: "technology partner"
+        pattern: "\\btechnology\\s+partner\\b"
+        is_phrase: true
+      - label: "collaboration"
+        pattern: "\\bcollaboration\\b"
+        is_phrase: false
+      - label: "alliance"
+        pattern: "\\balliance\\b"
+        is_phrase: false
+      - label: "consortium"
+        pattern: "\\bconsortium\\b"
+        is_phrase: false
+      - label: "open innovation"
+        pattern: "\\bopen\\s+innovation\\b"
+        is_phrase: true
+      - label: "co-development"
+        pattern: "\\bco[\\s-]development\\b"
+        is_phrase: false
+      - label: "licensing agreement"
+        pattern: "\\blicensing\\s+agreement\\b"
+        is_phrase: true
+      - label: "franchise"
+        pattern: "\\bfranchise\\b"
+        is_phrase: false
+
+  # -----------------------------------------------------------------------
+  # Digital
+  # -----------------------------------------------------------------------
+  - name: digital
+    display_name: "Digital"
+    keywords:
+      - label: "digital transformation"
+        pattern: "\\bdigital\\s+transformation\\b"
+        is_phrase: true
+      - label: "digital investment"
+        pattern: "\\bdigital\\s+investment\\b"
+        is_phrase: true
+      - label: "digital capability"
+        pattern: "\\bdigital\\s+capabilit(?:y|ies)\\b"
+        is_phrase: true
+      - label: "digital channel"
+        pattern: "\\bdigital\\s+channels?\\b"
+        is_phrase: true
+      - label: "ecommerce"
+        pattern: "\\becommerce\\b"
+        is_phrase: false
+      - label: "e-commerce"
+        pattern: "\\be[\\s-]commerce\\b"
+        is_phrase: false
+      - label: "online channel"
+        pattern: "\\bonline\\s+channels?\\b"
+        is_phrase: true
+      - label: "omnichannel"
+        pattern: "\\bomni[\\s-]?channel\\b"
+        is_phrase: false
+      - label: "digital strategy"
+        pattern: "\\bdigital\\s+strategy\\b"
+        is_phrase: true
+      - label: "digitization"
+        pattern: "\\bdigitization\\b"
+        is_phrase: false
+      - label: "digitalization"
+        pattern: "\\bdigitalization\\b"
+        is_phrase: false
+      - label: "digital innovation"
+        pattern: "\\bdigital\\s+innovation\\b"
+        is_phrase: true
+
+  # -----------------------------------------------------------------------
+  # AI Spend Evidence  (Lane 2 — text evidence for capex / opex signals)
+  # -----------------------------------------------------------------------
+  - name: ai_spend_evidence
+    display_name: "AI Spend Evidence"
+    keywords:
+      - label: "AI investment"
+        pattern: "\\bAI\\s+investment\\b"
+        is_phrase: true
+      - label: "AI infrastructure"
+        pattern: "\\bAI\\s+infrastructure\\b"
+        is_phrase: true
+      - label: "data center"
+        pattern: "\\bdata\\s+centers?\\b"
+        is_phrase: true
+      - label: "cloud infrastructure"
+        pattern: "\\bcloud\\s+infrastructure\\b"
+        is_phrase: true
+      - label: "GPU"
+        pattern: "\\bGPU\\b"
+        is_phrase: false
+      - label: "compute capacity"
+        pattern: "\\bcompute\\s+capacity\\b"
+        is_phrase: true
+      - label: "modernization"
+        pattern: "\\bmodernization\\b"
+        is_phrase: false
+      - label: "digital platform"
+        pattern: "\\bdigital\\s+platform\\b"
+        is_phrase: true
+      - label: "capitalized software"
+        pattern: "\\bcapitalized\\s+software\\b"
+        is_phrase: true
+      - label: "technology transformation"
+        pattern: "\\btechnology\\s+transformation\\b"
+        is_phrase: true
+      - label: "R&D"
+        pattern: "\\bR&D\\b"
+        is_phrase: false
+      - label: "research and development"
+        pattern: "\\bresearch\\s+and\\s+development\\b"
+        is_phrase: true

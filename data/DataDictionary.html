@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Dictionary — Scraping Project</title>
+<style>
+  :root {
+    --bg: #ffffff; --fg: #1a1a2e; --accent: #2563eb; --accent-light: #eff6ff;
+    --border: #e2e8f0; --muted: #64748b; --card-bg: #f8fafc;
+    --green: #16a34a; --amber: #d97706; --red: #dc2626;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--fg); background: var(--bg); line-height: 1.6; padding: 2rem; max-width: 1200px; margin: 0 auto; }
+  h1 { font-size: 1.8rem; margin-bottom: 0.25rem; }
+  .subtitle { color: var(--muted); margin-bottom: 2rem; font-size: 0.95rem; }
+  h2 { font-size: 1.35rem; margin: 2.5rem 0 0.5rem; padding-bottom: 0.3rem; border-bottom: 2px solid var(--accent); }
+  h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--accent); }
+  .overview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin: 1rem 0 2rem; }
+  .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; }
+  .stat-card .num { font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+  .stat-card .label { font-size: 0.85rem; color: var(--muted); }
+  .file-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; margin: 1rem 0; overflow: hidden; }
+  .file-header { padding: 0.75rem 1.25rem; background: var(--accent-light); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+  .file-header .path { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.9rem; font-weight: 600; }
+  .file-header .meta { font-size: 0.8rem; color: var(--muted); }
+  .badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+  .badge-csv { background: #dcfce7; color: var(--green); }
+  .badge-xlsx { background: #fef3c7; color: var(--amber); }
+  .badge-json { background: #fce7f3; color: #be185d; }
+  .file-body { padding: 1rem 1.25rem; }
+  .file-body p { margin-bottom: 0.5rem; font-size: 0.9rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin: 0.5rem 0; }
+  th { background: var(--accent-light); text-align: left; padding: 0.4rem 0.6rem; border: 1px solid var(--border); font-weight: 600; white-space: nowrap; }
+  td { padding: 0.35rem 0.6rem; border: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) { background: var(--card-bg); }
+  .type { font-family: monospace; font-size: 0.78rem; color: #7c3aed; }
+  .completeness { font-size: 0.78rem; }
+  .completeness-full { color: var(--green); }
+  .completeness-partial { color: var(--amber); }
+  .completeness-low { color: var(--red); }
+  .section-desc { font-size: 0.9rem; color: var(--muted); margin-bottom: 1rem; }
+  .toc { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.5rem; margin: 1.5rem 0; }
+  .toc ul { list-style: none; padding: 0; }
+  .toc li { padding: 0.2rem 0; }
+  .toc a { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+  .toc a:hover { text-decoration: underline; }
+  .toc .folder { font-weight: 600; margin-top: 0.5rem; }
+  .note { background: #fefce8; border-left: 3px solid var(--amber); padding: 0.6rem 1rem; margin: 0.75rem 0; font-size: 0.85rem; border-radius: 0 4px 4px 0; }
+  details { margin: 0.5rem 0; }
+  details summary { cursor: pointer; font-weight: 600; font-size: 0.9rem; color: var(--accent); }
+  .relationship-diagram { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin: 1rem 0; font-family: monospace; font-size: 0.82rem; white-space: pre; line-height: 1.5; overflow-x: auto; }
+  @media (max-width: 768px) { body { padding: 1rem; } .overview-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<h1>Data Dictionary</h1>
+<p class="subtitle">Scraping Project &mdash; Generated February 16, 2026</p>
+
+<!-- OVERVIEW -->
+<div class="overview-grid">
+  <div class="stat-card"><div class="num">17</div><div class="label">Total data files</div></div>
+  <div class="stat-card"><div class="num">5</div><div class="label">Directories with data</div></div>
+  <div class="stat-card"><div class="num">~40 MB</div><div class="label">Total data size</div></div>
+  <div class="stat-card"><div class="num">2,076</div><div class="label">Companies in master dataset</div></div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <strong>Contents</strong>
+  <ul>
+    <li class="folder">data/raw/ &mdash; Source Data</li>
+    <li>&nbsp;&nbsp;<a href="#forbes_csv">forbes_global2000.csv / .xlsx</a></li>
+    <li>&nbsp;&nbsp;<a href="#fortune_csv">fortune500.csv</a></li>
+    <li>&nbsp;&nbsp;<a href="#wrds">wrds_ticker_information.xlsx</a></li>
+    <li>&nbsp;&nbsp;<a href="#bav2023">Bav2023.xlsx</a></li>
+    <li>&nbsp;&nbsp;<a href="#bav2024">Bav2024.xlsx</a></li>
+    <li>&nbsp;&nbsp;<a href="#bav2025">Bav2025.xlsx</a></li>
+    <li class="folder">data/processed/ &mdash; Transformed Data</li>
+    <li>&nbsp;&nbsp;<a href="#merged">merged_companies.csv / .xlsx</a></li>
+    <li>&nbsp;&nbsp;<a href="#ticker_search">ticker_search_results.csv</a></li>
+    <li>&nbsp;&nbsp;<a href="#merged_fin">merged_companies_with_financials.csv</a></li>
+    <li>&nbsp;&nbsp;<a href="#checkpoint">financial_data_checkpoint.csv</a></li>
+    <li class="folder">data/ &mdash; Master Output</li>
+    <li>&nbsp;&nbsp;<a href="#master">MasterData.xlsx</a></li>
+    <li class="folder">EDGAR/ &mdash; SEC Filing Analysis</li>
+    <li>&nbsp;&nbsp;<a href="#edgar_output">wordcounts output CSV</a></li>
+    <li>&nbsp;&nbsp;<a href="#edgar_cache">cache/metadata &amp; submissions (JSON)</a></li>
+    <li class="folder">config/</li>
+    <li>&nbsp;&nbsp;<a href="#overrides">manual_ticker_overrides.json</a></li>
+  </ul>
+</div>
+
+<!-- DATA LINEAGE -->
+<h2>Data Lineage &amp; Relationships</h2>
+<div class="relationship-diagram">
+  RAW SOURCES                         PROCESSING                          OUTPUT
+  ─────────────                       ──────────                          ──────
+
+  forbes_global2000 ──┐
+    (2,000 companies)  ├──► merged_companies ──┐
+  fortune500 ─────────┘    (2,076 companies)   │
+    (500 companies)                             │
+                                                ├──► merged_companies_with_financials
+  ticker_search_results ◄── Yahoo Finance API   │        (2,076 × 120 cols)
+    (2,076 ticker lookups)                      │              │
+                                                │              ▼
+  manual_ticker_overrides ◄─ Manual review      │       MasterData.xlsx
+    (280 override entries)                      │        (2,076 × 120 cols)
+                                                │
+  wrds_ticker_information ──────────────────────┘
+    (33,220 obs × 76 financial ratios)
+
+  Bav2023.xlsx ──┐
+  Bav2024.xlsx ──┼── Brand perception data (not yet merged into master)
+  Bav2025.xlsx ──┘
+
+  EDGAR/cache/ ──► EDGAR/output/ wordcounts CSV (SEC 10-K text analysis, sample)
+</div>
+
+<!-- ================================================================ -->
+<!-- RAW DATA -->
+<!-- ================================================================ -->
+<h2>data/raw/ &mdash; Source Data</h2>
+<p class="section-desc">Original, unmodified data files scraped or downloaded from external sources.</p>
+
+<!-- Forbes -->
+<div class="file-card" id="forbes_csv">
+  <div class="file-header">
+    <span class="path">forbes_global2000.csv <span class="badge badge-csv">CSV</span> &nbsp; forbes_global2000.xlsx <span class="badge badge-xlsx">XLSX</span></span>
+    <span class="meta">314 KB (CSV) &bull; 163 KB (XLSX) &bull; 2,000 rows &times; 9 cols</span>
+  </div>
+  <div class="file-body">
+    <p><strong>Description:</strong> Forbes Global 2000 list. Ranks the world's 2,000 largest public companies by a composite of sales, profits, assets, and market value. The CSV and XLSX contain identical data.</p>
+    <p><strong>Grain:</strong> One row per company.</p>
+    <table>
+      <tr><th>Column</th><th>Type</th><th>Completeness</th><th>Unique</th><th>Description</th></tr>
+      <tr><td>rank</td><td class="type">int64</td><td class="completeness completeness-full">100%</td><td>1,672</td><td>Forbes composite rank (not unique &mdash; ties exist)</td></tr>
+      <tr><td>name</td><td class="type">object</td><td class="completeness completeness-full">100%</td><td>2,000</td><td>Company name as listed by Forbes</td></tr>
+      <tr><td>country</td><td class="type">object</td><td class="completeness completeness-full">100%</td><td>61</td><td>Country of headquarters</td></tr>
+      <tr><td>industry</td><td class="type">object</td><td class="completeness completeness-full">100%</td><td>37</td><td>Forbes industry classification</td></tr>
+      <tr><td>sales</td><td class="type">float64</td><td class="completeness completeness-full">100%</td><td>1,589</td><td>Annual sales revenue (USD)</td></tr>
+      <tr><td>profit</td><td class="type">float64</td><td class="completeness completeness-full">100%</td><td>1,430</td><td>Net profit (USD)</td></tr>
+      <tr><td>assets</td><td class="type">float64</td><td class="completeness completeness-full">100%</td><td>1,825</td><td>Total assets (USD)</td></tr>
+      <tr><td>market_value</td><td class="type">float64</td><td class="completeness completeness-full">100%</td><td>1,691</td><td>Market capitalisation (USD)</td></tr>
+      <tr><td>profile_url</td><td class="type">object</td><td class="completeness completeness-full">100%</td><td>2,000</td><td>Forbes profile page URL</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Fortune -->
+<div class="file-card" id="fortune_csv">
+  <div class="file-header">
+    <span class="path">fortune500.csv <span class="badge badge-csv">CSV</span></span>
+    <span class="meta">56 KB &bull; 500 rows &times; 10 cols</span>
+  </div>
+  <div class="file-body">
+    <p><strong>Description:</strong> Fortune 500 list. Ranks the 500 largest U.S. companies by total revenue.</p>
+    <p><strong>Grain:</strong> One row per company.</p>
+    <table>
+      <tr><th>Column</th><th>Type</th><th>Completeness</th><th>Unique</th><th>Description</th></tr>
+      <tr><td>rank</td><td class="type">int64</td><td class="completeness completeness-full">100%</td><td>499</td><td>Fortune revenue rank</td></tr>
+      <tr><td>company</td><td class="type">object</td><td class="completeness completeness-full">100%</td><td>500</td><td>Company name</td></tr>
+      <tr><td>industry</td><td class="type">object</td><td class="completeness completeness-full">100%</td><td>67</td><td>Fortune industry classification</td></tr>
+      <tr><td>city</td><td class="type">object</td><td class="completeness completeness-full">100%</td><td>226</td><td>HQ city</td></tr>
+      <tr><td>state</td><td class="type">object</td><td class="completeness completeness-full">100%</td><td>37</td><td>HQ state</td></tr>
+      <tr><td>zip</td><td class="type">int64</td><td class="completeness completeness-full">100%</td><td>368</td><td>HQ ZIP code</td></tr>
+      <tr><td>website</td><td class="type">object</td><td class="completeness completeness-full">100%</td><td>500</td><td>Company website</td></tr>
+      <tr><td>employees</td><td class="type">int64</td><td class="completeness completeness-full">100%</td><td>415</td><td>Number of employees</td></tr>
+      <tr><td>revenue</td><td class="type">int64</td><td class="completeness completeness-full">100%</td><td>499</td><td>Total revenue (USD)</td></tr>
+      <tr><td>ceo</td><td class="type">object</td><td class="completeness completeness-full">100%</td><td>499</td><td>CEO name</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- WRDS -->
+<div class="file-card" id="wrds">
+  <div class="file-header">
+    <span class="path">wrds_ticker_information.xlsx <span class="badge badge-xlsx">XLSX</span></span>
+    <span class="meta">13.9 MB &bull; 33,220 rows &times; 76 cols &bull; Sheet: "eiysg1dh0z1t6fc8"</span>
+  </div>
+  <div class="file-body">
+    <p><strong>Description:</strong> Financial ratios and valuation metrics from Wharton Research Data Services (WRDS). Contains quarterly data for ~577 unique companies (by <code>gvkey</code>) across ~60 quarters.</p>
+    <p><strong>Grain:</strong> One row per company-quarter observation.</p>
+    <div class="note">This is the largest single file by column count (76 variables). Identifiers are <code>gvkey</code>, <code>permno</code>, <code>TICKER</code>, and <code>cusip</code>.</div>
+    <details>
+      <summary>Show all 76 columns</summary>
+      <table>
+        <tr><th>Column</th><th>Type</th><th>Non-null</th><th>Description</th></tr>
+        <tr><td>gvkey</td><td class="type">int64</td><td>33,220/33,220</td><td>COMPUSTAT global company key</td></tr>
+        <tr><td>permno</td><td class="type">int64</td><td>33,220/33,220</td><td>CRSP permanent security number</td></tr>
+        <tr><td>adate</td><td class="type">datetime</td><td>33,200/33,220</td><td>Announcement date</td></tr>
+        <tr><td>qdate</td><td class="type">datetime</td><td>33,220/33,220</td><td>Quarter end date</td></tr>
+        <tr><td>public_date</td><td class="type">datetime</td><td>33,220/33,220</td><td>Public date (when data became available)</td></tr>
+        <tr><td>CAPEI</td><td class="type">float64</td><td>32,896/33,220</td><td>Shiller cyclically-adjusted P/E ratio</td></tr>
+        <tr><td>bm</td><td class="type">float64</td><td>31,249/33,220</td><td>Book-to-market ratio</td></tr>
+        <tr><td>evm</td><td class="type">float64</td><td>33,127/33,220</td><td>Enterprise value multiple</td></tr>
+        <tr><td>pe_op_basic</td><td class="type">float64</td><td>33,103/33,220</td><td>P/E ratio (operating, basic)</td></tr>
+        <tr><td>pe_op_dil</td><td class="type">float64</td><td>33,097/33,220</td><td>P/E ratio (operating, diluted)</td></tr>
+        <tr><td>pe_exi</td><td class="type">float64</td><td>33,093/33,220</td><td>P/E excl. extraordinary items</td></tr>
+        <tr><td>pe_inc</td><td class="type">float64</td><td>33,090/33,220</td><td>P/E incl. extraordinary items</td></tr>
+        <tr><td>ps</td><td class="type">float64</td><td>33,188/33,220</td><td>Price-to-sales ratio</td></tr>
+        <tr><td>pcf</td><td class="type">float64</td><td>33,189/33,220</td><td>Price-to-cash-flow ratio</td></tr>
+        <tr><td>dpr</td><td class="type">float64</td><td>29,660/33,220</td><td>Dividend payout ratio</td></tr>
+        <tr><td>npm</td><td class="type">float64</td><td>33,188/33,220</td><td>Net profit margin</td></tr>
+        <tr><td>opmbd</td><td class="type">float64</td><td>33,188/33,220</td><td>Operating margin before depreciation</td></tr>
+        <tr><td>opmad</td><td class="type">float64</td><td>33,188/33,220</td><td>Operating margin after depreciation</td></tr>
+        <tr><td>gpm</td><td class="type">float64</td><td>33,188/33,220</td><td>Gross profit margin</td></tr>
+        <tr><td>ptpm</td><td class="type">float64</td><td>33,188/33,220</td><td>Pre-tax profit margin</td></tr>
+        <tr><td>cfm</td><td class="type">float64</td><td>33,141/33,220</td><td>Cash flow margin</td></tr>
+        <tr><td>roa</td><td class="type">float64</td><td>33,186/33,220</td><td>Return on assets</td></tr>
+        <tr><td>roe</td><td class="type">float64</td><td>31,125/33,220</td><td>Return on equity</td></tr>
+        <tr><td>roce</td><td class="type">float64</td><td>33,176/33,220</td><td>Return on capital employed</td></tr>
+        <tr><td>efftax</td><td class="type">float64</td><td>28,934/33,220</td><td>Effective tax rate</td></tr>
+        <tr><td>aftret_eq</td><td class="type">float64</td><td>33,186/33,220</td><td>After-tax return on equity</td></tr>
+        <tr><td>aftret_invcapx</td><td class="type">float64</td><td>33,027/33,220</td><td>After-tax return on invested capital</td></tr>
+        <tr><td>aftret_equity</td><td class="type">float64</td><td>33,186/33,220</td><td>After-tax return on equity (alt)</td></tr>
+        <tr><td>pretret_noa</td><td class="type">float64</td><td>27,571/33,220</td><td>Pre-tax return on net operating assets</td></tr>
+        <tr><td>pretret_earnat</td><td class="type">float64</td><td>27,571/33,220</td><td>Pre-tax return on earning assets</td></tr>
+        <tr><td>GProf</td><td class="type">float64</td><td>33,200/33,220</td><td>Gross profitability (Novy-Marx)</td></tr>
+        <tr><td>equity_invcap</td><td class="type">float64</td><td>33,191/33,220</td><td>Equity / invested capital</td></tr>
+        <tr><td>debt_invcap</td><td class="type">float64</td><td>33,191/33,220</td><td>Debt / invested capital</td></tr>
+        <tr><td>totdebt_invcap</td><td class="type">float64</td><td>33,190/33,220</td><td>Total debt / invested capital</td></tr>
+        <tr><td>capital_ratio</td><td class="type">float64</td><td>33,209/33,220</td><td>Capital ratio</td></tr>
+        <tr><td>int_debt</td><td class="type">float64</td><td>30,038/33,220</td><td>Interest rate on debt</td></tr>
+        <tr><td>int_totdebt</td><td class="type">float64</td><td>30,036/33,220</td><td>Interest rate on total debt</td></tr>
+        <tr><td>cash_lt</td><td class="type">float64</td><td>33,206/33,220</td><td>Cash / long-term assets</td></tr>
+        <tr><td>invt_act</td><td class="type">float64</td><td>27,242/33,220</td><td>Inventory / current assets</td></tr>
+        <tr><td>rect_act</td><td class="type">float64</td><td>27,591/33,220</td><td>Receivables / current assets</td></tr>
+        <tr><td>debt_at</td><td class="type">float64</td><td>33,208/33,220</td><td>Debt / total assets</td></tr>
+        <tr><td>debt_ebitda</td><td class="type">float64</td><td>33,126/33,220</td><td>Debt / EBITDA</td></tr>
+        <tr><td>short_debt</td><td class="type">float64</td><td>33,106/33,220</td><td>Short-term debt ratio</td></tr>
+        <tr><td>curr_debt</td><td class="type">float64</td><td>27,597/33,220</td><td>Current debt ratio</td></tr>
+        <tr><td>lt_debt</td><td class="type">float64</td><td>33,206/33,220</td><td>Long-term debt ratio</td></tr>
+        <tr><td>profit_lct</td><td class="type">float64</td><td>27,588/33,220</td><td>Profit / current liabilities</td></tr>
+        <tr><td>ocf_lct</td><td class="type">float64</td><td>27,577/33,220</td><td>Operating cash flow / current liabilities</td></tr>
+        <tr><td>cash_debt</td><td class="type">float64</td><td>33,129/33,220</td><td>Cash flow / total debt</td></tr>
+        <tr><td>fcf_ocf</td><td class="type">float64</td><td>31,561/33,220</td><td>Free cash flow / operating cash flow</td></tr>
+        <tr><td>lt_ppent</td><td class="type">float64</td><td>32,825/33,220</td><td>Long-term assets / PP&amp;E</td></tr>
+        <tr><td>dltt_be</td><td class="type">float64</td><td>31,324/33,220</td><td>Long-term debt / book equity</td></tr>
+        <tr><td>debt_assets</td><td class="type">float64</td><td>33,209/33,220</td><td>Debt / assets</td></tr>
+        <tr><td>debt_capital</td><td class="type">float64</td><td>32,964/33,220</td><td>Debt / capital</td></tr>
+        <tr><td>de_ratio</td><td class="type">float64</td><td>33,209/33,220</td><td>Debt-to-equity ratio</td></tr>
+        <tr><td>intcov</td><td class="type">float64</td><td>29,647/33,220</td><td>Interest coverage (EBIT)</td></tr>
+        <tr><td>intcov_ratio</td><td class="type">float64</td><td>29,647/33,220</td><td>Interest coverage ratio</td></tr>
+        <tr><td>cash_ratio</td><td class="type">float64</td><td>27,597/33,220</td><td>Cash ratio</td></tr>
+        <tr><td>quick_ratio</td><td class="type">float64</td><td>27,597/33,220</td><td>Quick ratio</td></tr>
+        <tr><td>curr_ratio</td><td class="type">float64</td><td>27,597/33,220</td><td>Current ratio</td></tr>
+        <tr><td>cash_conversion</td><td class="type">float64</td><td>24,738/33,220</td><td>Cash conversion cycle (days)</td></tr>
+        <tr><td>inv_turn</td><td class="type">float64</td><td>25,816/33,220</td><td>Inventory turnover</td></tr>
+        <tr><td>at_turn</td><td class="type">float64</td><td>33,177/33,220</td><td>Asset turnover</td></tr>
+        <tr><td>rect_turn</td><td class="type">float64</td><td>32,938/33,220</td><td>Receivables turnover</td></tr>
+        <tr><td>pay_turn</td><td class="type">float64</td><td>32,168/33,220</td><td>Payables turnover</td></tr>
+        <tr><td>sale_invcap</td><td class="type">float64</td><td>33,170/33,220</td><td>Sales / invested capital</td></tr>
+        <tr><td>sale_equity</td><td class="type">float64</td><td>31,189/33,220</td><td>Sales / equity</td></tr>
+        <tr><td>sale_nwc</td><td class="type">float64</td><td>20,980/33,220</td><td>Sales / net working capital</td></tr>
+        <tr><td>rd_sale</td><td class="type">float64</td><td>33,210/33,220</td><td>R&amp;D / sales</td></tr>
+        <tr><td>adv_sale</td><td class="type">float64</td><td>33,188/33,220</td><td>Advertising / sales</td></tr>
+        <tr><td>staff_sale</td><td class="type">float64</td><td>33,188/33,220</td><td>Staff expense / sales</td></tr>
+        <tr><td>accrual</td><td class="type">float64</td><td>33,189/33,220</td><td>Accruals / average assets</td></tr>
+        <tr><td>ptb</td><td class="type">float64</td><td>31,249/33,220</td><td>Price-to-book ratio</td></tr>
+        <tr><td>PEG_trailing</td><td class="type">float64</td><td>22,006/33,220</td><td>PEG ratio (trailing)</td></tr>
+        <tr><td>divyield</td><td class="type">float64</td><td>23,285/33,220</td><td>Dividend yield</td></tr>
+        <tr><td>TICKER</td><td class="type">object</td><td>33,180/33,220</td><td>Stock ticker symbol</td></tr>
+        <tr><td>cusip</td><td class="type">object</td><td>33,187/33,220</td><td>CUSIP identifier</td></tr>
+      </table>
+    </details>
+  </div>
+</div>
+
+<!-- BAV -->
+<div class="file-card" id="bav2023">
+  <div class="file-header">
+    <span class="path">Bav2023.xlsx <span class="badge badge-xlsx">XLSX</span></span>
+    <span class="meta">10.9 MB &bull; 3,840 rows &times; 222 cols &bull; Sheet: "USA - Adults 2023 Full Year"</span>
+  </div>
+  <div class="file-body">
+    <p><strong>Description:</strong> BAV (Brand Asset Valuator) survey data for 2023. Measures brand health across dimensions of differentiation, relevance, esteem, and knowledge for ~3,840 brands among U.S. adults.</p>
+    <p><strong>Grain:</strong> One row per brand (within a category).</p>
+    <div class="note">Bav2024.xlsx and Bav2025.xlsx share the same 222-column schema. Differences: Bav2024 has 3,738 brands; Bav2025 has 3,646 brands. Minor column-name variations exist (e.g., "Committed_to_Inclusion" in 2023 vs "Committed_to_Equality" in 2024/2025).</div>
+    <details>
+      <summary>Show column groups (222 columns)</summary>
+      <table>
+        <tr><th>Column Group</th><th>Count</th><th>Description</th></tr>
+        <tr><td>Identifiers</td><td>10</td><td>Study, Base, Brand_NM, Brand_Key, Dupl_Index, Category_NM, Category_Key, Sector, Brand_Base, Unweighted_Brand_Base</td></tr>
+        <tr><td>BAV Pillar Ranks (_R)</td><td>7</td><td>Differentiation_R, Relevance_R, Esteem_R, Knowledge_R, Brand_Stature_R, Brand_Strength_R, Brand_Asset_R &mdash; percentile ranks (0&ndash;100)</td></tr>
+        <tr><td>Usage &amp; Preference (_PCT / _R)</td><td>~34</td><td>Use_Regularly, Use_Occasionally, Lapsed_User, Never_Used, One_I_Prefer, One_of_several, Only_If_No_Alternative, Would_Never_Consider, Total_Users, Total_Prefer, Behavioral/Emotional Commitment, Churn, Brand_Desire, Recommend_to_a_friend</td></tr>
+        <tr><td>BAV Pillar Scores (_C)</td><td>7</td><td>Continuous scores for Differentiation, Relevance, Esteem, Knowledge, Brand_Stature, Brand_Strength, Brand_Asset</td></tr>
+        <tr><td>Image Attributes (_PCT)</td><td>~50</td><td>Brand perception percentages: Different, Distinctive, Unique, Dynamic, Innovative, Leader, Reliable, High_Quality, Authentic, Trustworthy, Cool, Creative, etc.</td></tr>
+        <tr><td>Image Attributes (_R)</td><td>~50</td><td>Same attributes as above, expressed as percentile ranks</td></tr>
+        <tr><td>Classic / New Factors (_C / _R)</td><td>~22</td><td>Classic_Differentiation, Established, Distinguished, Dependable, Bold, Hip, Inventive, Spirited, Purposeful, Distant, Accessible</td></tr>
+        <tr><td>Old Pillar Scores</td><td>6</td><td>Legacy pillar measures: Old_Esteem, Old_Brand_Stature, Old_Brand_Strength (both _R and _C)</td></tr>
+        <tr><td>Scale Distributions (1&ndash;7)</td><td>~28</td><td>Relevance, Regard, Knowledge, Love_Hate scales broken into 7-point distributions</td></tr>
+        <tr><td>Metadata</td><td>~8</td><td>Holdout flag, Effective Base Size, Brand_Base variants by wave, Global Brand Name</td></tr>
+      </table>
+    </details>
+  </div>
+</div>
+
+<div class="file-card" id="bav2024">
+  <div class="file-header">
+    <span class="path">Bav2024.xlsx <span class="badge badge-xlsx">XLSX</span></span>
+    <span class="meta">10.5 MB &bull; 3,738 rows &times; 222 cols &bull; Sheet: "USA - Adults 2024 Full Year"</span>
+  </div>
+  <div class="file-body">
+    <p><strong>Description:</strong> BAV 2024. Same schema as Bav2023. Base size: 75,238 respondents. 3,738 brands across 372 categories and 36 sectors.</p>
+  </div>
+</div>
+
+<div class="file-card" id="bav2025">
+  <div class="file-header">
+    <span class="path">Bav2025.xlsx <span class="badge badge-xlsx">XLSX</span></span>
+    <span class="meta">10.5 MB &bull; 3,646 rows &times; 222 cols &bull; Sheet: "USA - Adults 2025 Full Year"</span>
+  </div>
+  <div class="file-body">
+    <p><strong>Description:</strong> BAV 2025. Same schema as Bav2023/2024. Base size: 74,995 respondents. 3,646 brands across 325 categories and 36 sectors.</p>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- PROCESSED DATA -->
+<!-- ================================================================ -->
+<h2>data/processed/ &mdash; Transformed Data</h2>
+<p class="section-desc">Intermediate outputs from the data pipeline. Forbes and Fortune lists are merged, tickers resolved, and financial data fetched.</p>
+
+<!-- merged_companies -->
+<div class="file-card" id="merged">
+  <div class="file-header">
+    <span class="path">merged_companies.csv <span class="badge badge-csv">CSV</span> &nbsp; merged_companies.xlsx <span class="badge badge-xlsx">XLSX</span></span>
+    <span class="meta">449 KB (CSV) / 230 KB (XLSX) &bull; ~2,076 rows &times; 22 cols</span>
+  </div>
+  <div class="file-body">
+    <p><strong>Description:</strong> Fuzzy-matched merge of Forbes Global 2000 and Fortune 500 lists into a unified company dataset. The CSV has 2,076 rows; the XLSX has 2,112 (slightly earlier version with more candidate matches).</p>
+    <p><strong>Grain:</strong> One row per unique company (universal_name).</p>
+    <table>
+      <tr><th>Column</th><th>Type</th><th>Non-null</th><th>Description</th></tr>
+      <tr><td>universal_name</td><td class="type">object</td><td>2,076</td><td>Standardised company name (primary key)</td></tr>
+      <tr><td>forbes_name_original</td><td class="type">object</td><td>2,000</td><td>Original Forbes company name</td></tr>
+      <tr><td>fortune_name_original</td><td class="type">object</td><td>500</td><td>Original Fortune company name</td></tr>
+      <tr><td>match_score</td><td class="type">float64</td><td>2,076</td><td>Fuzzy match confidence score (0&ndash;100)</td></tr>
+      <tr><td>match_details</td><td class="type">object</td><td>1,899</td><td>Match method details (e.g., "base=1.00")</td></tr>
+      <tr><td>rank_forbes</td><td class="type">float64</td><td>2,000</td><td>Forbes Global 2000 rank</td></tr>
+      <tr><td>country_forbes</td><td class="type">object</td><td>2,000</td><td>Country (from Forbes)</td></tr>
+      <tr><td>industry_forbes</td><td class="type">object</td><td>2,000</td><td>Industry (from Forbes)</td></tr>
+      <tr><td>sales_forbes</td><td class="type">float64</td><td>2,000</td><td>Sales (USD, from Forbes)</td></tr>
+      <tr><td>profit_forbes</td><td class="type">float64</td><td>2,000</td><td>Profit (USD, from Forbes)</td></tr>
+      <tr><td>assets_forbes</td><td class="type">float64</td><td>2,000</td><td>Total assets (USD, from Forbes)</td></tr>
+      <tr><td>market_value_forbes</td><td class="type">float64</td><td>2,000</td><td>Market cap (USD, from Forbes)</td></tr>
+      <tr><td>profile_url_forbes</td><td class="type">object</td><td>2,000</td><td>Forbes profile URL</td></tr>
+      <tr><td>rank_fortune</td><td class="type">float64</td><td>500</td><td>Fortune 500 rank</td></tr>
+      <tr><td>industry_fortune</td><td class="type">object</td><td>500</td><td>Industry (from Fortune)</td></tr>
+      <tr><td>city_fortune</td><td class="type">object</td><td>500</td><td>HQ city (from Fortune)</td></tr>
+      <tr><td>state_fortune</td><td class="type">object</td><td>500</td><td>HQ state (from Fortune)</td></tr>
+      <tr><td>zip_fortune</td><td class="type">float64</td><td>500</td><td>HQ ZIP (from Fortune)</td></tr>
+      <tr><td>website_fortune</td><td class="type">object</td><td>500</td><td>Website (from Fortune)</td></tr>
+      <tr><td>employees_fortune</td><td class="type">float64</td><td>500</td><td>Employee count (from Fortune)</td></tr>
+      <tr><td>revenue_fortune</td><td class="type">float64</td><td>500</td><td>Revenue (USD, from Fortune)</td></tr>
+      <tr><td>ceo_fortune</td><td class="type">object</td><td>500</td><td>CEO name (from Fortune)</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ticker_search_results -->
+<div class="file-card" id="ticker_search">
+  <div class="file-header">
+    <span class="path">ticker_search_results.csv <span class="badge badge-csv">CSV</span></span>
+    <span class="meta">1.5 MB &bull; 2,076 rows &times; 7 cols</span>
+  </div>
+  <div class="file-body">
+    <p><strong>Description:</strong> Results of automated ticker symbol lookups (via Yahoo Finance) for all 2,076 companies. Includes candidate matches and confidence scores.</p>
+    <p><strong>Grain:</strong> One row per company.</p>
+    <table>
+      <tr><th>Column</th><th>Type</th><th>Non-null</th><th>Description</th></tr>
+      <tr><td>index</td><td class="type">int64</td><td>2,076</td><td>Row index</td></tr>
+      <tr><td>company_name</td><td class="type">object</td><td>2,076</td><td>Universal company name</td></tr>
+      <tr><td>ticker</td><td class="type">object</td><td>1,772</td><td>Best-match ticker symbol</td></tr>
+      <tr><td>ticker_exchange</td><td class="type">object</td><td>1,772</td><td>Exchange code (e.g., NYQ, NMS)</td></tr>
+      <tr><td>ticker_match_score</td><td class="type">float64</td><td>2,076</td><td>Name similarity score (0&ndash;100)</td></tr>
+      <tr><td>ticker_manually_reviewed</td><td class="type">bool</td><td>2,076</td><td>Whether ticker was manually verified</td></tr>
+      <tr><td>search_candidates</td><td class="type">object</td><td>2,076</td><td>JSON array of all candidate ticker matches</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- merged_companies_with_financials -->
+<div class="file-card" id="merged_fin">
+  <div class="file-header">
+    <span class="path">merged_companies_with_financials.csv <span class="badge badge-csv">CSV</span></span>
+    <span class="meta">1.9 MB &bull; 2,076 rows &times; 120 cols</span>
+  </div>
+  <div class="file-body">
+    <p><strong>Description:</strong> Full merged dataset with historical financial statements (2021&ndash;2025) fetched from Yahoo Finance. Extends merged_companies with ticker info, market cap, and 5 years of income statement, balance sheet, and ratio data.</p>
+    <p><strong>Grain:</strong> One row per company &times; 5 years of financials in wide format.</p>
+    <details>
+      <summary>Show column groups (120 columns)</summary>
+      <table>
+        <tr><th>Column Group</th><th>Columns</th><th>Description</th></tr>
+        <tr><td>Company identity</td><td>universal_name, forbes_name_original, fortune_name_original, match_score, match_details</td><td>Same as merged_companies</td></tr>
+        <tr><td>Forbes data</td><td>rank_forbes, country_forbes, industry_forbes, sales_forbes, profit_forbes, assets_forbes, market_value_forbes, profile_url_forbes</td><td>Forbes Global 2000 fields</td></tr>
+        <tr><td>Fortune data</td><td>rank_fortune, industry_fortune, city_fortune, state_fortune, zip_fortune, website_fortune, employees_fortune, revenue_fortune, ceo_fortune</td><td>Fortune 500 fields</td></tr>
+        <tr><td>Ticker info</td><td>ticker, ticker_exchange, ticker_match_score, ticker_manually_reviewed, market_cap_yf, currency_yf, fetch_error</td><td>Ticker lookup results &amp; Yahoo Finance market cap</td></tr>
+        <tr><td>Financials per year (2021&ndash;2025)</td><td>year_{YYYY}, revenue_{YYYY}, net_income_{YYYY}, gross_profit_{YYYY}, operating_income_{YYYY}, total_assets_{YYYY}, total_liabilities_{YYYY}, total_equity_{YYYY}, total_debt_{YYYY}, current_assets_{YYYY}, current_liabilities_{YYYY}</td><td>Income statement &amp; balance sheet items (USD)</td></tr>
+        <tr><td>Ratios per year (2021&ndash;2025)</td><td>roe_{YYYY}, roa_{YYYY}, profit_margin_{YYYY}, gross_margin_{YYYY}, operating_margin_{YYYY}, debt_to_equity_{YYYY}, current_ratio_{YYYY}</td><td>Computed financial ratios</td></tr>
+        <tr><td>Flag</td><td>Review_Flag</td><td>Boolean flag for records needing manual review (all False)</td></tr>
+      </table>
+      <p style="margin-top:0.5rem; font-size:0.85rem; color:var(--muted);">Completeness varies by year: 2024 has the best coverage (~1,733 companies), while 2025 (~465) and 2021 (~1,268) have less due to reporting lag and data availability.</p>
+    </details>
+  </div>
+</div>
+
+<!-- financial_data_checkpoint -->
+<div class="file-card" id="checkpoint">
+  <div class="file-header">
+    <span class="path">financial_data_checkpoint.csv <span class="badge badge-csv">CSV</span></span>
+    <span class="meta">46 KB &bull; 60 rows &times; 94 cols</span>
+  </div>
+  <div class="file-body">
+    <p><strong>Description:</strong> Early checkpoint of the financial data fetch process. Contains data for 60 tickers (the first batch) with up to 5 years of financials using generic year labels (y1&ndash;y5).</p>
+    <p><strong>Grain:</strong> One row per ticker.</p>
+    <div class="note">This is an intermediate checkpoint file. The final data lives in merged_companies_with_financials.csv and MasterData.xlsx with named year columns (2021&ndash;2025).</div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- MASTER -->
+<!-- ================================================================ -->
+<h2>data/ &mdash; Master Output</h2>
+
+<div class="file-card" id="master">
+  <div class="file-header">
+    <span class="path">MasterData.xlsx <span class="badge badge-xlsx">XLSX</span></span>
+    <span class="meta">1.4 MB &bull; 2,076 rows &times; 120 cols &bull; Sheet: "Master"</span>
+  </div>
+  <div class="file-body">
+    <p><strong>Description:</strong> The primary deliverable. Contains the same 120-column schema as merged_companies_with_financials.csv in a clean Excel format. This is the canonical dataset combining Forbes Global 2000, Fortune 500, ticker resolution, and 5 years of Yahoo Finance financial data.</p>
+    <p><strong>Grain:</strong> One row per company (2,076 unique companies).</p>
+    <p><strong>Key identifiers:</strong> <code>universal_name</code> (primary key), <code>ticker</code>, <code>forbes_name_original</code>, <code>fortune_name_original</code></p>
+    <div class="note">Column schema is identical to merged_companies_with_financials.csv. The MasterData version has slightly more tickers resolved (1,807 vs 1,772) due to additional manual overrides applied.</div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- EDGAR -->
+<!-- ================================================================ -->
+<h2>EDGAR/ &mdash; SEC Filing Analysis</h2>
+
+<div class="file-card" id="edgar_output">
+  <div class="file-header">
+    <span class="path">output/wordcounts_wordlist_uncertainty_sample_*.csv <span class="badge badge-csv">CSV</span></span>
+    <span class="meta">2.7 KB &bull; 4 rows &times; 19 cols</span>
+  </div>
+  <div class="file-body">
+    <p><strong>Description:</strong> Sample output from an EDGAR 10-K text analysis pipeline. Counts occurrences of uncertainty-related words in SEC filings. Currently contains results for 4 filings (JPMorgan Chase 10-K variants).</p>
+    <p><strong>Grain:</strong> One row per filing document.</p>
+    <table>
+      <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+      <tr><td>run_utc</td><td class="type">object</td><td>Timestamp of the analysis run</td></tr>
+      <tr><td>wordlist_path</td><td class="type">object</td><td>Path to the word list used</td></tr>
+      <tr><td>wordlist_sha256</td><td class="type">object</td><td>SHA-256 hash of the word list</td></tr>
+      <tr><td>ticker</td><td class="type">object</td><td>Company ticker symbol</td></tr>
+      <tr><td>company_name</td><td class="type">object</td><td>Company name</td></tr>
+      <tr><td>cik10</td><td class="type">int64</td><td>SEC Central Index Key</td></tr>
+      <tr><td>form</td><td class="type">object</td><td>SEC form type (e.g., 10-K)</td></tr>
+      <tr><td>filing_date</td><td class="type">object</td><td>Date the filing was submitted</td></tr>
+      <tr><td>report_date</td><td class="type">object</td><td>Fiscal period end date</td></tr>
+      <tr><td>accession_number</td><td class="type">object</td><td>SEC accession number</td></tr>
+      <tr><td>primary_document</td><td class="type">object</td><td>Primary document filename</td></tr>
+      <tr><td>document_source</td><td class="type">object</td><td>Document source type</td></tr>
+      <tr><td>document_url</td><td class="type">object</td><td>SEC EDGAR document URL</td></tr>
+      <tr><td>cache_path</td><td class="type">object</td><td>Local cache file path</td></tr>
+      <tr><td>download_bytes</td><td class="type">int64</td><td>File size in bytes</td></tr>
+      <tr><td>token_count</td><td class="type">int64</td><td>Total token count in document</td></tr>
+      <tr><td>counts_json</td><td class="type">object</td><td>JSON with word occurrence counts</td></tr>
+      <tr><td>status</td><td class="type">object</td><td>Processing status ("ok" or error)</td></tr>
+      <tr><td>error</td><td class="type">float64</td><td>Error message (if any)</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="file-card" id="edgar_cache">
+  <div class="file-header">
+    <span class="path">cache/metadata/company_tickers.json <span class="badge badge-json">JSON</span></span>
+    <span class="meta">845 KB &bull; 10,379 entries</span>
+  </div>
+  <div class="file-body">
+    <p><strong>Description:</strong> SEC EDGAR company ticker lookup table. Maps numeric index keys to objects containing CIK number, ticker symbol, and company title for 10,379 entities.</p>
+    <p><strong>Structure:</strong> <code>{"0": {"cik_str": 1045810, "ticker": "NVDA", "title": "NVIDIA CORP"}, ...}</code></p>
+  </div>
+</div>
+
+<div class="file-card" id="edgar_cache_sub">
+  <div class="file-header">
+    <span class="path">cache/submissions/CIK0000019617.json <span class="badge badge-json">JSON</span></span>
+    <span class="meta">4.1 MB &bull; Single entity</span>
+  </div>
+  <div class="file-body">
+    <p><strong>Description:</strong> Cached SEC EDGAR submissions metadata for CIK 0000019617 (JPMorgan Chase). Contains entity information, filing history, and document references.</p>
+    <p><strong>Top-level keys:</strong> cik, entityType, sic, sicDescription, name, tickers, exchanges, ein, lei, description, website, investorWebsite, and more.</p>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- CONFIG -->
+<!-- ================================================================ -->
+<h2>config/ &mdash; Configuration</h2>
+
+<div class="file-card" id="overrides">
+  <div class="file-header">
+    <span class="path">manual_ticker_overrides.json <span class="badge badge-json">JSON</span></span>
+    <span class="meta">260 KB &bull; 280 entries</span>
+  </div>
+  <div class="file-body">
+    <p><strong>Description:</strong> Manual overrides for ticker symbol resolution. Contains 280 companies where automatic ticker matching was inconclusive or incorrect. Each entry stores the override decision and the original candidate list.</p>
+    <p><strong>Structure per entry:</strong></p>
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+      <tr><td>ticker</td><td class="type">string|null</td><td>Manually assigned ticker (null if no match)</td></tr>
+      <tr><td>exchange</td><td class="type">string|null</td><td>Assigned exchange code</td></tr>
+      <tr><td>score</td><td class="type">number</td><td>Manual confidence score</td></tr>
+      <tr><td>candidates</td><td class="type">array</td><td>List of candidate matches with symbol, shortname, exchange, similarity, is_us_exchange, quote_type</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- NOTES -->
+<!-- ================================================================ -->
+<h2>Notes &amp; Conventions</h2>
+<div class="file-body" style="background:var(--card-bg); border:1px solid var(--border); border-radius:8px; padding:1.25rem; margin-top:0.5rem;">
+  <p><strong>Currency:</strong> All monetary values (sales, revenue, profit, assets, market_value, etc.) are in USD unless otherwise noted. The <code>currency_yf</code> field in the financial datasets indicates the original reporting currency from Yahoo Finance.</p>
+  <p style="margin-top:0.5rem;"><strong>Suffixes:</strong> In BAV data, <code>_PCT</code> = percentage of respondents, <code>_R</code> = percentile rank (0&ndash;100), <code>_C</code> = continuous/composite score, <code>_MS</code> = mean score.</p>
+  <p style="margin-top:0.5rem;"><strong>Duplicate formats:</strong> Several files exist in both CSV and XLSX (forbes_global2000, merged_companies). The CSV versions are typically the pipeline outputs; the XLSX versions are formatted copies.</p>
+  <p style="margin-top:0.5rem;"><strong>Null values:</strong> Float columns with fewer non-null entries than total rows indicate companies that are not present in that source (e.g., Fortune fields are null for the ~1,576 companies that appear only in Forbes).</p>
+  <p style="margin-top:0.5rem;"><strong>Primary key:</strong> <code>universal_name</code> is the canonical company identifier across all processed and master files. Use <code>ticker</code> to join with external financial data.</p>
+</div>
+
+</body>
+</html>
