@@ -6,7 +6,7 @@ from multiprocessing import Pool, cpu_count
 
 # --- CONFIGURATION ---
 INPUT_DIR = 'cleaned_filings' 
-OUTPUT_FILE = 'Final_Digital_Maturity_Scores.csv' 
+OUTPUT_FILE = 'six_pillars_data.xlsx' 
 MAPPING_FILE = 'Target_List_MultiYear.csv' 
 
 # Original Dictionary
@@ -146,8 +146,8 @@ def main():
         # Round to 2 decimal places for a clean spreadsheet
         df_results[dim + '_Score_0_to_100'] = df_results[dim + '_Score_0_to_100'].round(2)
 
-    # ORGANIZE FINAL CSV
-    # Drop the intermediate '_freq' columns to keep the CSV clean
+    # ORGANIZE FINAL CSV -> XLSX
+    # Drop the intermediate '_freq' columns to keep the dataset clean
     drop_cols = [c for c in df_results.columns if '_freq' in c]
     df_results = df_results.drop(columns=drop_cols)
     
@@ -161,7 +161,9 @@ def main():
     
     # Sort chronologically by company
     df_results = df_results.sort_values(['Company_Name', 'Date_Filed'])
-    df_results.to_csv(OUTPUT_FILE, index=False)
+    
+    # Save formatted dataset to Excel
+    df_results.to_excel(OUTPUT_FILE, index=False)
     
     print(f"\nPhase 4 Complete.")
     print(f"Dataset securely saved to: {os.path.abspath(OUTPUT_FILE)}")

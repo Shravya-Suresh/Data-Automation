@@ -22,7 +22,7 @@ CONTACT_EMAIL = os.getenv('SEC_EMAIL', 'researcher@domain.com')
 # The User-Agent is now constructed dynamically
 HEADERS = {'User-Agent': f'DigitalMaturityProject {CONTACT_EMAIL}'}
 # Define relative paths (Assuming data is kept in the local directory)
-INPUT_FILE = 'fortune500_tickers.csv'  # List of target companies
+INPUT_FILE = 'company_tickers_and_names.csv'  # List of target companies
 OUTPUT_FILE = 'Target_List_MultiYear.csv'  # Final mapped list with URLs
 
 # Define the temporal scope of the research
@@ -93,52 +93,74 @@ def main():
     print(f"Loading input file: {INPUT_FILE}...")
     f500_df = pd.read_csv(INPUT_FILE)
     
-    # Drop rows where 'ticker' is NaN (the private companies identified)
-    valid_companies = f500_df.dropna(subset=['ticker']).copy()
+    # Rename the CSV columns to match what the script expects internally
+    f500_df = f500_df.rename(columns={'COMPANY NAME': 'company', 'TICKER': 'ticker'})
+
+    # Create a "dummy" ticker for private/mutual companies without one by removing spaces from their name
+    # Example: "State Farm Insurance" becomes "STATEFARMINSURANCE"
+    f500_df['ticker'] = f500_df['ticker'].fillna(f500_df['company'].astype(str).str.replace(' ', '').str.upper())
+    
+    # Make a copy as valid companies
+    valid_companies = f500_df.copy()
     
     # Ensure tickers are uppercase and clean
     valid_companies['ticker'] = valid_companies['ticker'].str.upper().str.strip()
     
-    # Rename columns for internal script consistency if necessary
-    # Your script uses 'universal_name', so we map 'company' to it
+    # Rename 'company' to 'universal_name' for consistency
     valid_companies = valid_companies.rename(columns={'company': 'universal_name'})
 
-    print(f"Loaded {len(valid_companies)} public companies to map.")
+    print(f"Loaded {len(valid_companies)} public & private companies to map.")
 
     # Get SEC map
     sec_map = get_sec_tickers_map()
 
     # Format CIKs to 10-digit strings (Preserves leading zeros for SEC matching)
-    sec_map['CIK_str'] = sec_map['cik_str'].astype(str).str.zfill(10)
-    
-    # Create a 1-to-1 dictionary for lookup
-    ticker_to_cik = dict(zip(sec_map['ticker'], sec_map['CIK_str']))
+    if not sec_map.empty:
+        sec_map['CIK_str'] = sec_map['cik_str'].astype(str).str.zfill(10)
+        ticker_to_cik = dict(zip(sec_map['ticker'], sec_map['CIK_str']))
+    else:
+        ticker_to_cik = {}
 
-    # Force-map companies that have dropped out of the SEC's active JSON
-    # due to mergers, spin-offs, or corporate restructuring.
+    # Force-map missing companies that are private, mutuals, cooperatives, or SEC dropouts.
     overrides = {
-        'SQ': '0001512673',   # Block
-        'DFS': '0001393612',  # Discover Financial Services
-        'BERY': '0001378992', # Berry Global Group
-        'OMI': '0000075252',  # Owens & Minor
-        'AMRK': '0001591588', # A-Mark Precious Metals (GOLD.com)
+        'AMRK': '0001591588', # A-Mark Precious Metals
         'ATUS': '0001702780', # Altice USA
-        'EDR': '0001766363',  # Endeavor Group Holdings
+        'BERY': '0001378992', # Berry Global Group
+        'BRKA': '0001067983', # Berkshire Hathaway 
+        'DFS':  '0001393612', # Discover Financial Services
+        'EDR':  '0001766363', # Endeavor Group Holdings
+        'FI':   '0000798354', # Fiserv
+        'FL':   '0000850209', # Foot Locker
+        'HES':  '0000004447', # Hess
+        'IPG':  '0000051644', # Interpublic Group
+        'K':    '0000055067', # Kellanova (formerly Kellogg)
+        'MMC':  '0000062709', # Marsh & McLennan
+        'OMI':  '0000075252', # Owens & Minor
+        'PARA': '0000813828', # Paramount Global
+        'SKX':  '0001065696', # Skechers U.S.A.
+        'SPTN': '0000877422', # SpartanNash
+        'SQ':   '0001512673', # Block
+        'WBA':  '0001618921', # Walgreens Boots Alliance
+        'X':    '0001163302', # United States Steel
     }
+    
     # Inject the missing companies into the dictionary
     ticker_to_cik.update(overrides)
     
     # Use .map() to assign CIKs directly to your original rows
     valid_companies['CIK'] = valid_companies['ticker'].map(ticker_to_cik)
     
-    # Drop rows that didn't find a CIK (keeps the list clean)
+    # Drop rows that still didn't find a CIK (if any remain)
+    unmapped = valid_companies[valid_companies['CIK'].isna()]
+    if not unmapped.empty:
+        print(f"Warning: Could not map {len(unmapped)} companies (e.g., {unmapped['universal_name'].head(3).tolist()})")
+        
     valid_companies = valid_companies.dropna(subset=['CIK']).copy()
     
     target_ciks = set(valid_companies['CIK'].unique())
     print(f"Successfully mapped {len(target_ciks)} unique CIKs.")
 
     # Locate 10-K URLs across target years
-    
     all_target_filings = []
     
     for year in TARGET_YEARS:
