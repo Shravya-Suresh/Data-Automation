@@ -26,7 +26,7 @@ INPUT_FILE = 'company_tickers_and_names.csv'  # List of target companies
 OUTPUT_FILE = 'Target_List_MultiYear.csv'  # Final mapped list with URLs
 
 # Define the temporal scope of the research
-TARGET_YEARS = [2023, 2024, 2025, 2026]
+TARGET_YEARS = [2022, 2023, 2024, 2025]
 
 def get_sec_tickers_map():
     """
