@@ -45,9 +45,12 @@ df_fortune['Ticker'] = df_fortune['Ticker'].replace(['NAN', 'NONE', ''], np.nan)
 df_scores['Ticker'] = df_scores['Ticker'].replace(['NAN', 'NONE', ''], np.nan)
 df_edgar['Ticker'] = df_edgar['Ticker'].replace(['NAN', 'NONE', ''], np.nan)
 
-# Give private companies a temporary unique dummy ticker so they merge cleanly
-missing_mask = df_fortune['Ticker'].isna()
-df_fortune.loc[missing_mask, 'Ticker'] = [f"PRIVATE_COMPANY_{i}" for i in range(missing_mask.sum())]
+# For private companies with no ticker, use their UPPERCASE COMPANY NAME as a temporary bridge!
+df_fortune['Ticker'] = df_fortune['Ticker'].fillna(df_fortune['COMPANY NAME'].astype(str).str.upper().str.strip())
+if 'Company_Name' in df_scores.columns:
+    df_scores['Ticker'] = df_scores['Ticker'].fillna(df_scores['Company_Name'].astype(str).str.upper().str.strip())
+if 'company_name' in df_edgar.columns:
+    df_edgar['Ticker'] = df_edgar['Ticker'].fillna(df_edgar['company_name'].astype(str).str.upper().str.strip())
 
 # Remove company name columns
 if 'Company_Name' in df_scores.columns:
@@ -60,8 +63,9 @@ print("Merging all dataframes...")
 merged_step1 = pd.merge(df_fortune, df_scores, on='Ticker', how='left')
 final_merged_df = pd.merge(merged_step1, df_edgar, on='Ticker', how='left')
 
-# Convert the temporary PRIVATE_COMPANY_X tickers back to being completely blank/empty
-final_merged_df['Ticker'] = final_merged_df['Ticker'].apply(lambda x: np.nan if str(x).startswith('PRIVATE_COMPANY_') else x)
+# Revert the temporary "Company Name Tickers" back to blank
+is_fallback = final_merged_df['Ticker'] == final_merged_df['COMPANY NAME'].astype(str).str.upper().str.strip()
+final_merged_df.loc[is_fallback, 'Ticker'] = np.nan
 
 # Convert any blank spaces to actual "NaN" (blanks) so Pandas can spot them
 final_merged_df = final_merged_df.replace(r'^\s*$', np.nan, regex=True)
@@ -84,4 +88,4 @@ print(f"Saving merged data to {output_filename}...")
 # Save to .xlsx
 final_merged_df.to_excel(output_filename, index=False)
 
-print("Done! 🎉 Your file has exactly 500 rows and is fully cleaned.")
+print("Done! 🎉 Your file has exactly 500 rows and private companies are merged.")
