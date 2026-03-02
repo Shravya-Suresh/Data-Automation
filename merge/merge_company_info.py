@@ -1,91 +1,107 @@
 import pandas as pd
 import numpy as np
 
-# Define paths
-scores_file = 'average_pillars_scores.xlsx' 
+# Suppress the Future Warning message
+pd.set_option('future.no_silent_downcasting', True)
+
+# ==========================================
+# 1. DEFINE YOUR FILE PATHS HERE
+# ==========================================
 fortune_file = '2025.Fortune.500.financials.xlsx'
-edgar_file = 'edgar_results_2026-02-23.xlsx'
+scores_file = 'average_pillars_scores.xlsx' 
+scores_ai_file = 'average_pillars_scores_and_ai_intensity.xlsx'
 
-# Read data
-print("Loading Scores and Fortune 500 data...")
-df_scores = pd.read_excel(scores_file)  
+# ==========================================
+# 2. LOAD DATA & CLEAN
+# ==========================================
+print("Loading Fortune 500, Original Scores, and AI Intensity data...")
 df_fortune = pd.read_excel(fortune_file) 
+df_scores = pd.read_excel(scores_file)
+df_scores_ai = pd.read_excel(scores_ai_file, sheet_name='Fortune500')
 
-# Drop 'Unnamed' and 'FN:' columns
+# Drop 'Unnamed' and 'FN:' columns from the Fortune 500 file
 cols_to_drop = [col for col in df_fortune.columns if 'Unnamed' in str(col) or 'FN:' in str(col)]
 df_fortune = df_fortune.drop(columns=cols_to_drop)
 
-# The Fortune 500 file has 500 companies plus a few empty/footnote rows at the bottom.
-# This drops any row that doesn't have a Company Name, leaving exactly 500 clean rows.
+# Drop any row that doesn't have a Company Name, leaving exactly 500 clean rows.
 df_fortune = df_fortune.dropna(subset=['COMPANY NAME'])
 
-print("Loading EDGAR data...")
-# Load the summary sheet
-df_edgar_summary = pd.read_excel(edgar_file, sheet_name='Summary by Company')
+# --- THE FIX ---
+# Keep ONLY the Ticker, Company Name, and Avg_AI_Intensity from the AI file.
+# This prevents it from overwriting the correct pillar scores!
+cols_to_keep = [col for col in df_scores_ai.columns if col.lower() in ['ticker', 'company_name'] or col == 'Avg_AI_Intensity']
+df_scores_ai = df_scores_ai[cols_to_keep]
 
-# Load the first sheet to extract the company_name -> ticker mapping
-print("Extracting Tickers from EDGAR Sheet 1...")
-df_edgar_sheet1 = pd.read_excel(edgar_file, sheet_name=0, usecols=['company_name', 'ticker'])
-ticker_mapping = df_edgar_sheet1.drop_duplicates(subset=['company_name'])
-
-# Add ticker to summary sheet
-df_edgar_summary.columns = [col.lower().replace(' ', '_') for col in df_edgar_summary.columns]
-df_edgar = pd.merge(df_edgar_summary, ticker_mapping, on='company_name', how='left')
-
-# Standardize ticker
+# ==========================================
+# 3. STANDARDIZE TICKER COLUMNS
+# ==========================================
 df_fortune = df_fortune.rename(columns={'TICKER': 'Ticker'})
-df_edgar = df_edgar.rename(columns={'ticker': 'Ticker'})
+if 'ticker' in df_scores.columns: df_scores = df_scores.rename(columns={'ticker': 'Ticker'})
+if 'TICKER' in df_scores.columns: df_scores = df_scores.rename(columns={'TICKER': 'Ticker'})
 
-df_scores['Ticker'] = df_scores['Ticker'].astype(str).str.upper().str.strip()
+if 'ticker' in df_scores_ai.columns: df_scores_ai = df_scores_ai.rename(columns={'ticker': 'Ticker'})
+if 'TICKER' in df_scores_ai.columns: df_scores_ai = df_scores_ai.rename(columns={'TICKER': 'Ticker'})
+
+# Clean string formats (uppercase and strip accidental spaces)
 df_fortune['Ticker'] = df_fortune['Ticker'].astype(str).str.upper().str.strip()
-df_edgar['Ticker'] = df_edgar['Ticker'].astype(str).str.upper().str.strip()
+df_scores['Ticker'] = df_scores['Ticker'].astype(str).str.upper().str.strip()
+df_scores_ai['Ticker'] = df_scores_ai['Ticker'].astype(str).str.upper().str.strip()
 
-# Replace 'NAN' or 'NONE' strings with actual empty missing values
+# Replace 'NAN', 'NONE', or blank strings with actual empty missing values
 df_fortune['Ticker'] = df_fortune['Ticker'].replace(['NAN', 'NONE', ''], np.nan)
 df_scores['Ticker'] = df_scores['Ticker'].replace(['NAN', 'NONE', ''], np.nan)
-df_edgar['Ticker'] = df_edgar['Ticker'].replace(['NAN', 'NONE', ''], np.nan)
+df_scores_ai['Ticker'] = df_scores_ai['Ticker'].replace(['NAN', 'NONE', ''], np.nan)
 
+# ==========================================
+# 4. TEMPORARY BRIDGE FOR PRIVATE COMPANIES
+# ==========================================
 # For private companies with no ticker, use their UPPERCASE COMPANY NAME as a temporary bridge!
 df_fortune['Ticker'] = df_fortune['Ticker'].fillna(df_fortune['COMPANY NAME'].astype(str).str.upper().str.strip())
-if 'Company_Name' in df_scores.columns:
-    df_scores['Ticker'] = df_scores['Ticker'].fillna(df_scores['Company_Name'].astype(str).str.upper().str.strip())
-if 'company_name' in df_edgar.columns:
-    df_edgar['Ticker'] = df_edgar['Ticker'].fillna(df_edgar['company_name'].astype(str).str.upper().str.strip())
 
-# Remove company name columns
-if 'Company_Name' in df_scores.columns:
-    df_scores = df_scores.drop(columns=['Company_Name'])
-if 'company_name' in df_edgar.columns:
-    df_edgar = df_edgar.drop(columns=['company_name'])
+# Apply bridge to the original scores file
+comp_col_scores = 'Company_Name' if 'Company_Name' in df_scores.columns else 'company_name' if 'company_name' in df_scores.columns else None
+if comp_col_scores:
+    df_scores['Ticker'] = df_scores['Ticker'].fillna(df_scores[comp_col_scores].astype(str).str.upper().str.strip())
+    df_scores = df_scores.drop(columns=[comp_col_scores])
 
-# merge DFs (left join)
-print("Merging all dataframes...")
+# Apply bridge to the AI Intensity file
+comp_col_ai = 'Company_Name' if 'Company_Name' in df_scores_ai.columns else 'company_name' if 'company_name' in df_scores_ai.columns else None
+if comp_col_ai:
+    df_scores_ai['Ticker'] = df_scores_ai['Ticker'].fillna(df_scores_ai[comp_col_ai].astype(str).str.upper().str.strip())
+    df_scores_ai = df_scores_ai.drop(columns=[comp_col_ai])
+
+# ==========================================
+# 5. MERGE THE DATAFRAMES
+# ==========================================
+print("Merging dataframes...")
+# First merge Fortune 500 with the correct Original Scores
 merged_step1 = pd.merge(df_fortune, df_scores, on='Ticker', how='left')
-final_merged_df = pd.merge(merged_step1, df_edgar, on='Ticker', how='left')
 
-# Revert the temporary "Company Name Tickers" back to blank
+# Then merge that result with ONLY the AI Intensity scores
+final_merged_df = pd.merge(merged_step1, df_scores_ai, on='Ticker', how='left')
+
+# Revert the temporary "Company Name Tickers" back to being completely blank
 is_fallback = final_merged_df['Ticker'] == final_merged_df['COMPANY NAME'].astype(str).str.upper().str.strip()
 final_merged_df.loc[is_fallback, 'Ticker'] = np.nan
 
 # Convert any blank spaces to actual "NaN" (blanks) so Pandas can spot them
 final_merged_df = final_merged_df.replace(r'^\s*$', np.nan, regex=True)
 
-# Reorder columns
+# ==========================================
+# 6. REORDER COLUMNS & SAVE
+# ==========================================
 fortune_cols = [col for col in df_fortune.columns if col != 'Ticker']
 pillars_cols = [col for col in df_scores.columns if col != 'Ticker']
-edgar_cols   = [col for col in df_edgar.columns   if col != 'Ticker']
+ai_cols = [col for col in df_scores_ai.columns if col != 'Ticker']
 
-# Assemble the new column order
-new_order = ['Ticker'] + fortune_cols + pillars_cols + edgar_cols
-
-# Apply the new order to the dataframe
+# Assemble the new column order: Ticker -> Fortune 500 data -> Original Pillars -> AI Intensity data
+new_order = ['Ticker'] + fortune_cols + pillars_cols + ai_cols
 final_merged_df = final_merged_df[new_order]
 
-# save the result to excel
-output_filename = 'Merged_Data_Fortune500.xlsx'
+# Save the result to Excel
+output_filename = 'Final_Merged_Fortune500_AI_Intensity.xlsx'
 print(f"Saving merged data to {output_filename}...")
 
-# Save to .xlsx
 final_merged_df.to_excel(output_filename, index=False)
 
-print("Done! 🎉 Your file has exactly 500 rows and private companies are merged.")
+print("Done! 🎉 Your file has exactly 500 rows, with correct pillar scores and the new AI intensity.")
