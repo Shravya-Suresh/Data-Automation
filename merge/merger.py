@@ -21,11 +21,12 @@ def create_final_deliverable():
     df_pillars['Date_Filed'] = pd.to_datetime(df_pillars['Date_Filed'], errors='coerce')
     df_pillars['Year'] = df_pillars['Date_Filed'].dt.year
 
+    df_edgar = df_edgar[df_edgar['form'] == '10-K']
+
     df_edgar['filing_date'] = pd.to_datetime(df_edgar['filing_date'], errors='coerce')
     df_edgar['Year'] = df_edgar['filing_date'].dt.year
     df_edgar = df_edgar.rename(columns={'ticker': 'Ticker'})
-    
-    # FIX FOR THE 16 ROWS ISSUE: 
+     
     # Sort by date and drop duplicates so we only keep exactly one filing per year per Ticker.
     df_pillars = df_pillars.sort_values('Date_Filed').drop_duplicates(subset=['Ticker', 'Year'], keep='last')
     df_edgar = df_edgar.sort_values('filing_date').drop_duplicates(subset=['Ticker', 'Year'], keep='last')
@@ -41,6 +42,9 @@ def create_final_deliverable():
         sheet2_df = sheet2_df.sort_values(by=['Revenue Rank 2024', 'Ticker', 'Year'])
         sheet2_df = sheet2_df.drop(columns=['Revenue Rank 2024'])
         f500_cols_to_keep.remove('Revenue Rank 2024')
+        # A safety check here to prevent ValueError if the item was already removed
+        if 'Revenue Rank 2024' in f500_cols_to_keep:
+            f500_cols_to_keep.remove('Revenue Rank 2024')
 
     print("Reordering Columns...")
     # Get Pillars columns (excluding ones already captured)
