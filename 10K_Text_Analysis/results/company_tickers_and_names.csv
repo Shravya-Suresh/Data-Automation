@@ -1,0 +1,503 @@
+COMPANY NAME,TICKER
+Walmart,WMT
+Amazon.com,AMZN
+UnitedHealth Group,UNH
+Apple,AAPL
+CVS Health,CVS
+Berkshire Hathaway,BRKA
+Alphabet,GOOGL
+Exxon Mobil,XOM
+McKesson,MCK
+Cencora,COR
+JPMorgan Chase,JPM
+Costco Wholesale,COST
+Cigna Group,CI
+Microsoft,MSFT
+Cardinal Health,CAH
+Chevron,CVX
+Bank of America,BAC
+General Motors,GM
+Ford Motor,F
+Elevance Health,ELV
+Citigroup,C
+Meta Platforms,META
+Centene,CNC
+Home Depot,HD
+Fannie Mae,FNMA
+Walgreens Boots Alliance,WBA
+Kroger,KR
+Phillips 66,PSX
+Marathon Petroleum,MPC
+Verizon Communications,VZ
+Nvidia,NVDA
+Goldman Sachs Group,GS
+Wells Fargo,WFC
+Valero Energy,VLO
+Comcast,CMCSA
+State Farm Insurance,
+AT&T,T
+Freddie Mac,FMCC
+Humana,HUM
+Morgan Stanley,MS
+Target,TGT
+StoneX Group,SNEX
+Tesla,TSLA
+Dell Technologies,DELL
+PepsiCo,PEP
+Walt Disney,DIS
+United Parcel Service,UPS
+Johnson & Johnson,JNJ
+FedEx,FDX
+Archer Daniels Midland,ADM
+Procter & Gamble,PG
+Lowe's,LOW
+Energy Transfer,ET
+RTX,RTX
+Albertsons,ACI
+Sysco,SYY
+Progressive,PGR
+American Express,AXP
+Lockheed Martin,LMT
+MetLife,MET
+HCA Healthcare,HCA
+Prudential Financial,PRU
+Boeing,BA
+Caterpillar,CAT
+Merck,MRK
+Allstate,ALL
+Pfizer,PFE
+International Business Machines,IBM
+New York Life Insurance,
+Delta Air Lines,DAL
+Publix Super Markets,
+Nationwide,
+TD Synnex,SNX
+United Airlines Holdings,UAL
+ConocoPhillips,COP
+TJX,TJX
+AbbVie,ABBV
+Enterprise Products Partners,EPD
+Charter Communications,CHTR
+Performance Food Group,PFGC
+American Airlines Group,AAL
+Capital One Financial,COF
+Cisco Systems,CSCO
+HP,HPQ
+Tyson Foods,TSN
+Intel,INTC
+Oracle,ORCL
+Broadcom,AVGO
+Deere,DE
+Nike,NKE
+Liberty Mutual Insurance Group,
+Plains GP Holdings,PAGP
+United Services Automobile Assn.,
+Bristol-Myers Squibb,BMY
+Ingram Micro Holding,INGM
+General Dynamics,GD
+Coca-Cola,KO
+TIAA,
+Travelers,TRV
+Eli Lilly,LLY
+Uber Technologies,UBER
+Massachusetts Mutual Life Insurance,
+Dow,DOW
+Thermo Fisher Scientific,TMO
+U.S. Bancorp,USB
+World Kinect,WKC
+Abbott Laboratories,ABT
+Best Buy,BBY
+Northwestern Mutual,
+Northrop Grumman,NOC
+Molina Healthcare,MOH
+Dollar General,DG
+Bank of New York (BNY),BK
+Warner Bros. Discovery,WBD
+CHS,
+Netflix,NFLX
+Qualcomm,QCOM
+General Electric (GE Aerospace),GE
+Honeywell International,HON
+Salesforce,CRM
+Philip Morris International,PM
+US Foods Holding,USFD
+D.R. Horton,DHI
+Lithia Motors,LAD
+Mondelez International,MDLZ
+Starbucks,SBUX
+Visa,V
+CBRE Group,CBRE
+Lennar,LEN
+GE Vernova,GEV
+PNC Financial Services Group,PNC
+Cummins,CMI
+Paccar,PCAR
+Amgen,AMGN
+PBF Energy,PBF
+GuideWell Mutual Holding,
+PayPal Holdings,PYPL
+United Natural Foods,UNFI
+Dollar Tree,DLTR
+Nucor,NUE
+Penske Automotive Group,PAG
+Coupang,CPNG
+Hewlett Packard Enterprise,HPE
+Duke Energy,DUK
+KKR,KKR
+Ferguson Enterprises,FERG
+Paramount Global,PARA
+Jabil,JBL
+Gilead Sciences,GILD
+HF Sinclair,DINO
+CarMax,KMX
+Mastercard,MA
+NRG Energy,NRG
+Arrow Electronics,ARW
+Baker Hughes,BKR
+Southwest Airlines,LUV
+American International Group,AIG
+Applied Materials,AMAT
+Occidental Petroleum,OXY
+AutoNation,AN
+Southern,SO
+Hartford Insurance Group,HIG
+Apollo Global Management,APO
+Charles Schwab,SCHW
+McDonald's,MCD
+Kraft Heinz,KHC
+Advanced Micro Devices,AMD
+Truist Financial,TFC
+Freeport-McMoRan,FCX
+Micron Technology,MU
+Marriott International,MAR
+Carrier Global,CARR
+NextEra Energy,NEE
+3M,MMM
+Marsh & McLennan,MMC
+PG&E,PCG
+Union Pacific,UNP
+Synchrony Financial,SYF
+Block,XYZ
+Danaher,DHR
+Avnet,AVT
+Booking Holdings,BKNG
+EOG Resources,EOG
+Quanta Services,PWR
+Discover Financial Services,
+Constellation Energy,CEG
+Genuine Parts,GPC
+Jones Lang LaSalle,JLL
+Lear,LEA
+Live Nation Entertainment,LYV
+Sherwin-Williams,SHW
+Exelon,EXC
+Macy's,M
+Halliburton,HAL
+Stryker,SYK
+Reinsurance Group of America,RGA
+Waste Management,WM
+State Street,STT
+WESCO International,WCC
+Oneok,OKE
+Adobe,ADBE
+American Family Insurance Group,
+L3Harris Technologies,LHX
+Ross Stores,ROST
+CDW,CDW
+Tenet Healthcare,THC
+BJ's Wholesale Club,BJ
+Fiserv,FI
+Altria Group,MO
+BlackRock,BLK
+Becton Dickinson,BDX
+Colgate-Palmolive,CL
+Kimberly-Clark,KMB
+Group 1 Automotive,GPI
+Parker-Hannifin,PH
+General Mills,GIS
+Cognizant Technology Solutions,CTSH
+American Electric Power,AEP
+GE HealthCare Technologies,GEHC
+Automatic Data Processing,ADP
+Cleveland-Cliffs,CLF
+Aflac,AFL
+Goodyear Tire & Rubber,GT
+Corebridge Financial,CRBG
+Newmont,NEM
+International Paper,IP
+AutoZone,AZO
+Lincoln National,LNC
+PulteGroup,PHM
+Ameriprise Financial,AMP
+Murphy USA,MUSA
+ManpowerGroup,MAN
+C.H. Robinson Worldwide,CHRW
+PPG Industries,PPG
+Edison International,EIX
+Steel Dynamics,STLD
+Loews,L
+Emerson Electric,EMR
+Aramark,ARMK
+MGM Resorts International,MGM
+Vistra,VST
+Asbury Automotive Group,ABG
+W.W. Grainger,GWW
+Global Partners,GLP
+Jacobs Solutions,J
+Corteva,CTVA
+Peter Kiewit Sons',
+Boston Scientific,BSX
+O'Reilly Automotive,ORLY
+Leidos Holdings,LDOS
+Markel Group,MKL
+Whirlpool,WHR
+Guardian Life Ins. Co. of America,
+Builders FirstSource,BLDR
+Ally Financial,ALLY
+Targa Resources,TRGP
+Fluor,FLR
+Intuit,INTU
+AECOM,ACM
+Jones Financial (Edward Jones),
+Kohl's,KSS
+Land O'Lakes,
+Principal Financial,PFG
+Dominion Energy,D
+Kyndryl Holdings,KD
+Republic Services,RSG
+Devon Energy,DVN
+Illinois Tool Works,ITW
+Northern Trust,NTRS
+Auto-Owners Insurance,
+Universal Health Services,UHS
+Pacific Life,
+EchoStar,SATS
+Ecolab,ECL
+Cheniere Energy,LNG
+Omnicom Group,OMC
+Texas Instruments,TXN
+United States Steel,X
+Estée Lauder,EL
+Farmers Insurance Exchange,
+Kenvue,KVUE
+IQVIA Holdings,IQV
+Stanley Black & Decker,SWK
+Keurig Dr Pepper,KDP
+United Rentals,URI
+Consolidated Edison,ED
+Amphenol,APH
+Baxter International,BAX
+Kinder Morgan,KMI
+Gap,GAP
+Nordstrom,
+Super Micro Computer,SMCI
+First Citizens BancShares,FCNCA
+Raymond James Financial,RJF
+Lam Research,LRCX
+Tractor Supply,TSCO
+Casey's General Stores,CASY
+Viatris,VTRS
+Mutual of Omaha Insurance,
+EMCOR Group,EME
+CSX,CSX
+LKQ,LKQ
+Otis Worldwide,OTIS
+Sonic Automotive,SAH
+S&P Global,SPGI
+Regeneron Pharmaceuticals,REGN
+BorgWarner,BWA
+Fox,FOXA
+Reliance,RS
+Western & Southern Financial Group,
+Textron,TXT
+Expedia Group,EXPE
+Fidelity National Financial,FNF
+Carvana,CVNA
+DXC Technology,DXC
+W.R. Berkley,WRB
+M&T Bank,MTB
+Dick's Sporting Goods,DKS
+Xcel Energy,XEL
+Fifth Third Bancorp,FITB
+Blackstone,BX
+Sempra,SRE
+Erie Insurance Group,
+Corning,GLW
+Lumen Technologies,LUMN
+FirstEnergy,FE
+Hess,HES
+Labcorp Holdings,LH
+Western Digital,WDC
+Unum Group,UNM
+DaVita,DVA
+Kellanova,K
+Henry Schein,HSIC
+Ryder System,R
+Community Health Systems,CYH
+Delek US Holdings,DK
+DTE Energy,DTE
+Equitable Holdings,EQH
+DuPont,DD
+LPL Financial Holdings,LPLA
+Citizens Financial Group,CFG
+MasTec,MTZ
+AES,AES
+Berry Global Group,
+Westlake,WLK
+Norfolk Southern,NSC
+Air Products & Chemicals,APD
+J.B. Hunt Transport Services,JBHT
+Ball,BALL
+Conagra Brands,CAG
+Huntington Bancshares,HBAN
+Hormel Foods,HRL
+Eversource Energy,ES
+Alcoa,AA
+Entergy,ETR
+Assurant,AIZ
+Chewy,CHWY
+Wayfair,W
+Crown Holdings,CCK
+Avis Budget Group,CAR
+Intercontinental Exchange,ICE
+Alaska Air Group,ALK
+GXO Logistics,GXO
+AGCO,AGCO
+Graybar Electric,
+Molson Coors Beverage,TAP
+Arthur J. Gallagher,AJG
+Huntington Ingalls Industries,HII
+International Flavors & Fragrances,IFF
+Darden Restaurants,DRI
+Cincinnati Financial,CINF
+Chipotle Mexican Grill,CMG
+Yum China Holdings,YUMC
+Las Vegas Sands,LVS
+Ulta Beauty,ULTA
+Caesars Entertainment,CZR
+BrightSpring Health Services,BTSG
+Andersons,ANDE
+Hershey,HSY
+Hilton Worldwide Holdings,HLT
+Mosaic,MOS
+Airbnb,ABNB
+Diamondback Energy,FANG
+American Tower,AMT
+Vertex Pharmaceuticals,VRTX
+ServiceNow,NOW
+Owens Corning,OC
+Thrivent Financial for Lutherans,
+Advance Auto Parts,AAP
+Toll Brothers,TOL
+Mohawk Industries,MHK
+Motorola Solutions,MSI
+Oshkosh,OSK
+DoorDash,DASH
+Owens & Minor,OMI
+NVR,NVR
+Interpublic Group,IPG
+Booz Allen Hamilton Holding,BAH
+Burlington Stores,BURL
+Expeditors International of Washington,EXPD
+Lululemon athletica,LULU
+Fidelity National Information Services,FIS
+Jefferies Financial Group,JEF
+Williams,WMB
+VF,VFC
+FM,
+Autoliv,ALV
+Westinghouse Air Brake Technologies ,WAB
+Public Service Enterprise Group,PEG
+Dana,DAN
+Ebay,EBAY
+Celanese,CE
+Global Payments,GPN
+News Corp.,NWSA
+THOR Industries,THO
+QVC Group,QVCGA
+Icahn Enterprises,IEP
+Constellation Brands,STZ
+Quest Diagnostics,DGX
+KLA,KLAC
+QXO Building Products,
+APA,APA
+A-Mark Precious Metals,AMRK
+Biogen,BIIB
+Campbell's,CPB
+Concentrix,CNXC
+Cintas,CTAS
+SpartanNash,SPTN
+Ace Hardware,
+Analog Devices,ADI
+Eastman Chemical,EMN
+Interactive Brokers Group,IBKR
+Regions Financial,RF
+JetBlue Airways,JBLU
+Zoetis,ZTS
+KeyCorp,KEY
+Oscar Health,OSCR
+Ovintiv,OVV
+Seaboard,SEB
+Hertz Global Holdings,HTZ
+Skechers U.S.A.,SKX
+Altice USA,ATUS
+NOV,NOV
+Graphic Packaging Holding,GPK
+Avery Dennison,AVY
+Equinix,EQIX
+Insight Enterprises,NSIT
+Sirius XM Holdings,SIRI
+PVH,PVH
+CenterPoint Energy,CNP
+WEC Energy Group,WEC
+Xylem,XYL
+Franklin Resources,BEN
+PPL,PPL
+Workday,WDAY
+Dover,DOV
+Packaging Corp. of America,PKG
+ABM Industries,ABM
+Intuitive Surgical,ISRG
+American Financial Group,AFG
+Rockwell Automation,ROK
+Solventum,SOLV
+Old Republic International,ORI
+Securian Financial Group,
+Prologis,PLD
+J.M. Smucker,SJM
+Taylor Morrison Home,TMHC
+XPO,XPO
+Voya Financial,VOYA
+Palo Alto Networks,PANW
+Vertiv Holdings,VRT
+Welltower,WELL
+Foot Locker,FL
+Par Pacific Holdings,PARR
+TransDigm Group,TDG
+Commercial Metals,CMC
+Post Holdings,POST
+Masco,MAS
+Rush Enterprises,RUSHB
+KBR,KBR
+Sprouts Farmers Market,SFM
+Williams-Sonoma,WSM
+Zimmer Biomet Holdings,ZBH
+CACI International,CACI
+Microchip Technology,MCHP
+Watsco,WSO
+Newell Brands,NWL
+ARKO,ARKO
+Sanmina,SANM
+Electronic Arts,EA
+Yum Brands,YUM
+Fastenal,FAST
+CMS Energy,CMS
+Monster Beverage,MNST
+Endeavor Group Holdings,
+Science Applications International,SAIC
+Core & Main,CNM
+Howmet Aerospace,HWM
+Ingredion,INGR
+Vulcan Materials,VMC
+,
+,

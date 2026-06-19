@@ -1,3 +1,15 @@
+"""
+Phase 3: Text Preprocessing
+
+Cleans the raw 10-K filings into pure narrative text following the Loughran &
+McDonald methodology: removes SEC/XBRL headers, drops exhibits, deletes numeric
+financial tables (>25% digits), strips encoded image blobs, and reduces the text
+to uppercase, alphabetic-only words. Runs in parallel and is resumable.
+
+Input : 10k_filings/      (raw .txt filings from Phase 2)
+Output: cleaned_filings/  (cleaned narrative text, one .txt per filing)
+"""
+
 import os
 import re
 import concurrent.futures
@@ -5,8 +17,11 @@ from tqdm import tqdm
 from bs4 import BeautifulSoup
 
 # --- CONFIGURATION ---
-INPUT_DIR = '10k_filings'       # Raw downloaded files
-OUTPUT_DIR = 'cleaned_filings'  # Clean output
+# Resolve paths relative to the project root (parent of scripts/).
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+INPUT_DIR = os.path.join(PROJECT_ROOT, '10k_filings')       # Raw downloaded files
+OUTPUT_DIR = os.path.join(PROJECT_ROOT, 'cleaned_filings')  # Clean output
 
 def clean_file_strictly(raw_text):
     """

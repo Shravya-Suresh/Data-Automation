@@ -1,9 +1,12 @@
 """
 Phase 1: SEC EDGAR Target Mapping
 
-This script reads a master list of target companies, maps their ticker 
-symbols to SEC Central Index Keys (CIKs), and crawls the SEC Master Index 
-to generate exact download URLs for their 10-K filings across target years.
+Maps company ticker symbols to SEC Central Index Keys (CIKs), then crawls the
+SEC quarterly master index to build exact 10-K download URLs for the target
+companies across the years 2022-2025.
+
+Input : results/company_tickers_and_names.csv  (target company list)
+Output: results/Target_List_MultiYear.csv      (mapped filings with download URLs)
 """
 
 import requests
@@ -21,9 +24,15 @@ CONTACT_EMAIL = os.getenv('SEC_EMAIL', 'researcher@domain.com')
 # --- CONFIGURATION ---
 # The User-Agent is now constructed dynamically
 HEADERS = {'User-Agent': f'DigitalMaturityProject {CONTACT_EMAIL}'}
-# Define relative paths (Assuming data is kept in the local directory)
-INPUT_FILE = 'company_tickers_and_names.csv'  # List of target companies
-OUTPUT_FILE = 'Target_List_MultiYear.csv'  # Final mapped list with URLs
+
+# Resolve paths relative to the project root (parent of scripts/), so the
+# script runs correctly regardless of the current working directory.
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+RESULTS_DIR = os.path.join(PROJECT_ROOT, 'results')
+
+INPUT_FILE = os.path.join(RESULTS_DIR, 'company_tickers_and_names.csv')  # List of target companies
+OUTPUT_FILE = os.path.join(RESULTS_DIR, 'Target_List_MultiYear.csv')     # Final mapped list with URLs
 
 # Define the temporal scope of the research
 TARGET_YEARS = [2022, 2023, 2024, 2025]

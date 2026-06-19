@@ -1,3 +1,14 @@
+"""
+Phase 2: 10-K Filing Downloader
+
+Downloads the raw 10-K filings listed in the Phase 1 target file directly from
+SEC EDGAR, respecting SEC rate limits. Resumable: any file already on disk is
+skipped, so the run can be safely interrupted and restarted.
+
+Input : results/Target_List_MultiYear.csv  (download URLs from Phase 1)
+Output: 10k_filings/  (one raw .txt per filing, named TICKER_YYYY-MM-DD.txt)
+"""
+
 import requests
 import pandas as pd
 import time
@@ -12,6 +23,12 @@ HEADERS = {'User-Agent': f'DigitalMaturityProject {CONTACT_EMAIL}'}
 
 INPUT_FILE = 'Target_List_MultiYear.csv' # Target CIK list
 OUTPUT_DIR = '10k_filings' # Output folder with all companies txt files
+
+# Resolve paths relative to the project root (parent of scripts/).
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+INPUT_FILE = os.path.join(PROJECT_ROOT, 'results', INPUT_FILE)
+OUTPUT_DIR = os.path.join(PROJECT_ROOT, OUTPUT_DIR)
 
 def download_filings():
     # Setup Directory

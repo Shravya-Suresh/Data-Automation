@@ -1,3 +1,17 @@
+"""
+Phase 4: Digital Maturity Scoring
+
+Counts keyword matches in the cleaned filings against a seven-dimension
+dictionary (the "6 P's": Purpose, Phygital, Platforms, Participation,
+Partnerships, People, plus Governance), converts them to term frequencies, and
+applies min-max normalization to scale each dimension to a 0-100 score across
+the dataset. Each dimension is normalized independently.
+
+Input : cleaned_filings/                    (cleaned text from Phase 3)
+        results/Target_List_MultiYear.csv   (used to attach company names)
+Output: results/seven_pillars_data.xlsx     (scores per filing)
+"""
+
 import os
 import pandas as pd
 import re
@@ -5,13 +19,21 @@ from tqdm import tqdm
 from multiprocessing import Pool, cpu_count
 
 # --- CONFIGURATION ---
-INPUT_DIR = 'cleaned_filings' 
-OUTPUT_FILE = 'six_pillars_data.xlsx' 
-MAPPING_FILE = 'Target_List_MultiYear.csv' 
+# Resolve paths relative to the project root (parent of scripts/).
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+RESULTS_DIR = os.path.join(PROJECT_ROOT, 'results')
 
-# Original Dictionary
+INPUT_DIR = os.path.join(PROJECT_ROOT, 'cleaned_filings')
+OUTPUT_FILE = os.path.join(RESULTS_DIR, 'seven_pillars_data.xlsx')
+MAPPING_FILE = os.path.join(RESULTS_DIR, 'Target_List_MultiYear.csv')
+
+# Scoring Dictionary
+# Each key becomes the column prefix in the output (e.g. PURPOSE_Score_0_to_100).
+# Adding or removing a pillar here flows through the rest of the script
+# automatically — no other edits are required.
 KEYWORDS = {
-    'DIMENSION_1_PURPOSE': [
+    'PURPOSE': [
         'purpose', 'mission', 'social impact', 'shared value', 'stakeholder capitalism',
         'sustainability', 'esg', 'carbon footprint', 'net zero', 'circular economy',
         'social responsibility', 'community impact', 'inclusive', 'accessible', 'ethical ai',
@@ -19,30 +41,34 @@ KEYWORDS = {
         'b corp', 'benefit corporation', 'triple bottom line',
         'digital inclusion', 'digital divide', 'accessibility standards'
     ],
-    'DIMENSION_2_PHYGITAL': [
+    'PHYGITAL': [
         'omnichannel', 'click-and-collect', 'in-store digital', 'iot', 
         'augmented reality', 'seamless experience', 'buy online pick up in store', 
         'connected stores', 'smart retail', 'hybrid experience'
     ],
-    'DIMENSION_3_PLATFORMS': [
+    'PLATFORMS': [
         'platform', 'marketplace', 'ecosystem', 'api', 'developer community',
         'network effect', 'open source', 'partner ecosystem', 'app store', 
         'third-party developers', 'platform economy', 'api-first'
     ],
-    'DIMENSION_4_PARTICIPATION': [
+    'PARTICIPATION': [
         'co-creation', 'crowdsourcing', 'user-generated content', 'community-led',
         'open innovation', 'customer feedback loops', 'beta testing', 'user forums',
         'brand ambassadors', 'maker community', 'hackathons'
     ],
-    'DIMENSION_5_PARTNERSHIPS': [
+    'PARTNERSHIPS': [
         'strategic alliance', 'joint venture', 'collaboration', 'partner network',
         'cross-industry collaboration', 'innovation ecosystem', 'open innovation',
         'consortium', 'university partnership', 'startup accelerator', 'corporate venture capital'
     ],
-    'DIMENSION_6_PEOPLE': [
+    'PERSONALIZATION': [
         'digital skills', 'upskilling', 'reskilling', 'agile', 'digital culture',
         'remote work', 'hybrid work', 'employee experience', 'digital talent',
         'diversity and inclusion', 'growth mindset', 'continuous learning'
+    ],
+    'GOVERNANCE': [
+        'oversight', 'risk mitigation', 'board committee',
+        'governance architecture', 'safeguards', 'compliance'
     ]
 }
 
